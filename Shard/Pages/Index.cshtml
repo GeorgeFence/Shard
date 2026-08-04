@@ -1,0 +1,30 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+<iframe src="/funny-captcha"
+        width="470"
+        height="600"
+        style="border:none; scrolling:no; overflow:hidden;"
+        title="Funny CAPTCHA">
+</iframe>
+
+<script>
+    // Naslouchání zprávám z Iframe
+    window.addEventListener("message", function(event) {
+        // Kontrola, zda zpráva obsahuje náš domluvený status
+        if (event.data && event.data.captchaStatus === "OK") {
+            console.log("Success message received:", event.data.message);
+
+            // ZDE proveďte akci na hlavní stránce, například:
+            // document.getElementById("submitFormButton").disabled = false;
+            alert("Main Page Event: Captcha solved successfully!");
+        }
+    }, false);
+</script>

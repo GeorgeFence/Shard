@@ -1,0 +1,265 @@
+﻿@{
+    // Disable the main layout so the page is completely blank and ready for an iframe
+    Layout = null;
+
+    // Definition of hilarious challenges
+    var challenges = new[]
+    {
+        new {
+            Type = "checkbox",
+            Text = "Prove you are a human:",
+            Content = "I swear I do not own a smart toaster and am not planning a robot uprising."
+        },
+        new {
+            Type = "slider",
+            Text = "Set the slider to exactly 69.420 %:",
+            Content = "(Hint: Keep trying for 10 seconds to exhaust the system)"
+        },
+        new {
+            Type = "speed",
+            Text = "Human reflex test:",
+            Content = "Click the button before your lower back starts hurting! (Or survive 10 seconds)"
+        },
+        new {
+            Type = "existential",
+            Text = "Consciousness security clearance:",
+            Content = "I am 100% sure that I am not currently dreaming."
+        }
+    };
+
+    // Pick a completely random challenge on every single page refresh
+    var random = new Random();
+    var current = challenges[random.Next(challenges.Length)];
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CAPTCHA Verification</title>
+    <style>
+            body {
+                background-color: transparent;
+                margin: 0;
+                padding: 10px;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                box-sizing: border-box;
+            }
+
+            .captcha-box {
+                background-color: #ffffff;
+                border: 1px solid #d3d3d3;
+                border-radius: 3px;
+                padding: 15px;
+                width: 450px;
+                height: 550px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                position: relative;
+            }
+
+            .captcha-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 12px;
+            }
+
+            .captcha-title {
+                font-size: 13px;
+                color: #555;
+                font-weight: 600;
+            }
+
+            .refresh-btn {
+                background: none;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                color: #888;
+                padding: 0 5px;
+                transition: color 0.2s, transform 0.2s;
+                line-height: 1;
+            }
+
+                .refresh-btn:hover {
+                    color: #333;
+                    transform: rotate(180deg);
+                }
+
+            .challenge-container {
+                background-color: #f9f9f9;
+                border: 1px solid #e8e8e8;
+                border-radius: 3px;
+                padding: 15px;
+                height: calc(100% - 45px);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 14px;
+                color: #333;
+                box-sizing: border-box;
+            }
+
+            .funny-check {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+            }
+
+                .funny-check input {
+                    width: 22px;
+                    height: 22px;
+                    cursor: pointer;
+                }
+
+            .funny-slider {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .runaway-btn {
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: bold;
+                position: relative;
+                transition: transform 0.1s ease;
+            }
+
+            .existential-btn {
+                background-color: #f1f1f1;
+                border: 1px solid #ccc;
+                padding: 12px;
+                cursor: pointer;
+                width: 100%;
+                text-align: center;
+                border-radius: 4px;
+            }
+
+                .existential-btn:hover {
+                    background-color: #e5e5e5;
+                }
+
+            .timer-hint {
+                font-size: 11px;
+                color: #999;
+                margin-top: 15px;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- SDÍLENÝ JAVASCRIPT PŘESUNUT SEM NAHORU, ABY SE NAČETL PŘED ELEMENTY -->
+    <script>
+            // Core Shared Communication Function
+            function sendSuccessToParent(alertMessage) {
+                // Post message directly to the parent page hosting this iframe
+                window.parent.postMessage({
+                    captchaStatus: "OK",
+                    message: "Human verified via absurd challenge."
+                }, "*");
+            }
+
+            // Shared 10s Timer Logic for "Impossible Tasks" (slider & speed)
+            function startFrustrationTimer() {
+                let secondsLeft = 10;
+                // Použijeme setInterval po načtení DOMu, nebo s malým zpožděním, aby element už existoval
+                setTimeout(() => {
+                    const timerMsg = document.getElementById('timer-msg');
+
+                    const interval = setInterval(() => {
+                        secondsLeft--;
+                        if (timerMsg) {
+                            timerMsg.innerText = `Frustration level accepted in: (${secondsLeft}s remaining)`;
+                        }
+
+                        if (secondsLeft <= 0) {
+                            clearInterval(interval);
+                            sendSuccessToParent("System timed out. You have proven your human persistence by dealing with this nonsense for 10 seconds.");
+                        }
+                    }, 1000);
+                }, 50);
+            }
+    </script>
+
+    <div class="captcha-box">
+        <div class="captcha-header">
+            <div class="captcha-title">@current.Text</div>
+            <button type="button" class="refresh-btn" onclick="window.location.reload();" title="Give me another stupid task">↻</button>
+        </div>
+
+        <div class="challenge-container">
+            @if (current.Type == "checkbox")
+            {
+                <label class="funny-check">
+                    <input type="checkbox" onchange="if(this.checked) sendSuccessToParent('Verified. The system has detected abnormally high levels of procrastination.');" />
+                    <span>@current.Content</span>
+                </label>
+            }
+
+            @if (current.Type == "slider")
+            {
+                <div style="width: 100%; text-align: center;">
+                    <input type="range" min="0" max="100" value="30" class="funny-slider" id="slider" oninput="checkSlider(this.value)" />
+                    <span id="slider-status" style="font-size: 11px; color: #777; display:block; margin-top:5px;">Current: 30% (Failure)</span>
+                    <div class="timer-hint" id="timer-msg">Analyzing user frustration... (10s remaining)</div>
+                </div>
+                <script>
+                                function checkSlider(val) {
+                                    let status = document.getElementById('slider-status');
+                                    status.innerText = val == 69 ? "So close! You are missing 0.420 %." : "Current: " + val + "% (Failure)";
+                                }
+                                startFrustrationTimer();
+                </script>
+            }
+
+            @if (current.Type == "speed")
+            {
+                <div style="text-align:center; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                    <button type="button" class="runaway-btn" id="runBtn" onmouseover="runAway()" onclick="sendSuccessToParent('How did you do that?! You are definitely a cheater bot, but fine.');">
+                        CLICK HERE!
+                    </button>
+                    <div class="timer-hint" id="timer-msg" style="margin-top: 40px;">Survive the chase: (10s remaining)</div>
+                </div>
+                <script>
+                                function runAway() {
+                                    const btn = document.getElementById('runBtn');
+                                    const x = Math.random() * 160 - 80;
+                                    const y = Math.random() * 160 - 80;
+                                    btn.style.transform = `translate(${x}px, ${y}px)`;
+                                }
+                                startFrustrationTimer();
+                </script>
+            }
+
+            @if (current.Type == "existential")
+            {
+                <button type="button" class="existential-btn" onclick="toggleExist(this)">
+                    @current.Content
+                </button>
+                <script>
+                                function toggleExist(btn) {
+                                    if (btn.innerText.includes("100%")) {
+                                        btn.innerText = "Maybe more like 50%...";
+                                    } else {
+                                        btn.innerText = "Matrix accepted your non-existence.";
+                                        sendSuccessToParent("Existential crisis accepted. You may pass.");
+                                    }
+                                }
+                </script>
+            }
+        </div>
+    </div>
+
+</body>
+</html>

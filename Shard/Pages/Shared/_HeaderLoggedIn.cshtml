@@ -1,0 +1,153 @@
+﻿@page
+@model dynamic
+@{
+}
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 BlueToPinkGradient">
+    <div class="container-fluid">
+
+        <!-- Menu button -->
+        <button id="menuButton" class="menu-button" type="button">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <img src="~/images/shard_logo.png" alt="Shard Logo" style="height: 30px; margin-right: 10px;" />
+
+        <a class="navbar-brand" asp-area="" asp-page="/Index">
+            Shard
+        </a>
+
+        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+            <ul class="navbar-nav flex-grow-1">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="" asp-page="/Index">
+                        Home
+                    </a>
+                </li>
+            </ul>
+
+            <div class="dropdown">
+                <button class="btn btn-link dropdown-toggle text-dark"
+                        type="button"
+                        id="userDropdown"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                    <i class="bi bi-person-circle" style="font-size: 28px;"></i>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li>
+                        <span class="dropdown-item-text">
+                            @User.Identity.Name
+                        </span>
+                    </li>
+
+                    <li><hr class="dropdown-divider" /></li>
+
+                    <li>
+                        <a class="dropdown-item"
+                           asp-area="Identity"
+                           asp-page="/Account/Manage/Index">
+                            ⚙ Settings
+                        </a>
+                    </li>
+
+                    <li>
+                        <form asp-area="Identity"
+                              asp-page="/Account/Logout"
+                              asp-route-returnUrl="@Url.Page("/Index")">
+                            <button type="submit" class="dropdown-item">
+                                🚪 Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const menuButton = document.getElementById("menuButton");
+        const menu = document.getElementById("menuContainer");
+        const mainContent = document.getElementById("mainContent");
+        const footer = document.querySelector("footer");
+
+        if (menuButton && menu) {
+
+            menuButton.addEventListener("click", () => {
+
+                const isOpen = menu.style.display === "block";
+
+                if (isOpen) {
+                    // zavřít menu
+                    menu.style.display = "none";
+
+                    if (mainContent)
+                        mainContent.style.display = "block";
+
+                    if (footer)
+                        footer.style.display = "block";
+                }
+                else {
+                    // otevřít menu
+                    menu.style.display = "block";
+
+                    if (mainContent)
+                        mainContent.style.display = "none";
+
+                    if (footer)
+                        footer.style.display = "none";
+                }
+
+                // hamburger -> křížek
+                menuButton.classList.toggle("active");
+
+            });
+        }
+
+    });
+</script>
+
+<style>
+    .menu-button {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+        margin-right: 10px;
+        cursor: pointer;
+    }
+
+        .menu-button span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background: black;
+            border-radius: 3px;
+            transition: 0.3s ease;
+        }
+
+
+        /* Animace hamburger -> X */
+        .menu-button.active span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+        }
+
+        .menu-button.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-button.active span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+        }
+</style>

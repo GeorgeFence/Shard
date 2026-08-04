@@ -1,0 +1,29 @@
+﻿@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Register confirmation";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<h2>Please confirm</h2>
+<iframe src="/funny-captcha"
+        width="470"
+        height="600"
+        style="border:none; scrolling:no; overflow:hidden;"
+        title="Funny CAPTCHA">
+</iframe>
+
+<script>
+    window.addEventListener("message", function (event) {
+        if (event.data?.captchaStatus === "OK") {
+            document.getElementById("confirm-link").style.display = "inline";
+        }
+    });
+</script>
+
+<a id="confirm-link"
+   href="@Model.EmailConfirmationUrl"
+   style="display:none;">
+    Click here to confirm your account
+</a>

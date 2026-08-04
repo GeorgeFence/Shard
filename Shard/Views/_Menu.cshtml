@@ -1,0 +1,188 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    .menu-panel {
+        width: 100%;
+        height: 100%;
+        background: #111827;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        padding: 15px;
+        font-family: system-ui;
+    }
+
+
+    .menu-user {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.08);
+    }
+
+
+        .menu-user i {
+            font-size: 38px;
+        }
+
+
+        .menu-user span {
+            display: block;
+            font-size: 12px;
+            opacity: .6;
+        }
+
+
+
+    .explorer-header {
+        margin-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        opacity: .8;
+    }
+
+
+    .explorer-actions button {
+        background: none;
+        border: 0;
+        color: white;
+        cursor: pointer;
+    }
+
+
+
+    .file-tree {
+        margin-top: 15px;
+        font-size: 14px;
+    }
+
+
+    .tree-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+
+        .tree-item:hover {
+            background: rgba(255,255,255,.1);
+        }
+
+
+        .tree-item.active {
+            background: #2563eb;
+        }
+
+
+    .tree-children {
+        margin-left: 22px;
+    }
+
+
+
+    .menu-bottom {
+        margin-top: auto;
+        border-top: 1px solid rgba(255,255,255,.15);
+        padding-top: 10px;
+    }
+
+
+        .menu-bottom a {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+        }
+</style>
+<div class="menu-panel">
+
+    <div class="menu-user">
+        <i class="bi bi-person-circle"></i>
+
+        <div>
+            <strong>@User.Identity?.Name</strong>
+            <span>Workspace</span>
+        </div>
+    </div>
+
+
+    <div class="explorer-header">
+        <span>EXPLORER</span>
+
+        <div class="explorer-actions">
+            <button title="New file">
+                <i class="bi bi-file-earmark-plus"></i>
+            </button>
+
+            <button title="New folder">
+                <i class="bi bi-folder-plus"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <div class="file-tree">
+
+        <div class="tree-item folder">
+            <i class="bi bi-chevron-down"></i>
+            <i class="bi bi-folder-fill"></i>
+            Documents
+        </div>
+
+
+        <div class="tree-children">
+
+            <div class="tree-item file active">
+                <i class="bi bi-file-earmark-text"></i>
+                Welcome.md
+            </div>
+
+            <div class="tree-item file">
+                <i class="bi bi-file-earmark-text"></i>
+                Ideas.md
+            </div>
+
+
+            <div class="tree-item folder">
+                <i class="bi bi-chevron-right"></i>
+                <i class="bi bi-folder-fill"></i>
+                Projects
+            </div>
+
+        </div>
+
+
+        <div class="tree-item folder">
+            <i class="bi bi-chevron-right"></i>
+            <i class="bi bi-folder-fill"></i>
+            School
+        </div>
+
+    </div>
+
+
+    <div class="menu-bottom">
+
+        <a>
+            <i class="bi bi-gear"></i>
+            Settings
+        </a>
+
+        <a>
+            <i class="bi bi-question-circle"></i>
+            Help
+        </a>
+
+    </div>
+
+</div>
