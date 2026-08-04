@@ -3,28 +3,158 @@
 @{
     ViewData["Title"] = "Home page";
 }
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="text-center">
+        <h1 class="display-4">Welcome @User.Identity.Name</h1>
+        <p>To continue, open file first.</p>
+    </div>
+}
+else
+{
+    <div class="shard-home">
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
-<iframe src="/funny-captcha"
-        width="470"
-        height="600"
-        style="border:none; scrolling:no; overflow:hidden;"
-        title="Funny CAPTCHA">
-</iframe>
+        <section class="hero">
 
-<script>
-    // Naslouchání zprávám z Iframe
-    window.addEventListener("message", function(event) {
-        // Kontrola, zda zpráva obsahuje náš domluvený status
-        if (event.data && event.data.captchaStatus === "OK") {
-            console.log("Success message received:", event.data.message);
+            <img src="~/images/shard_logo.png" class="hero-logo" />
 
-            // ZDE proveďte akci na hlavní stránce, například:
-            // document.getElementById("submitFormButton").disabled = false;
-            alert("Main Page Event: Captcha solved successfully!");
+            <h1>
+                Welcome to <span>Shard</span>
+            </h1>
+
+            <p>
+                A modern workspace for notes, ideas and knowledge.
+                Organize your school notes, projects and thoughts in one place.
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Register">
+                    <i class="bi bi-person-plus"></i>
+                    Get Started
+                </a>
+
+                <a class="btn btn-outline-secondary" href="#features">
+                    Learn More
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <section id="features" class="features">
+
+            <div class="feature-card">
+                <i class="bi bi-journal-text"></i>
+                <h3>Smart Notes</h3>
+                <p>
+                    Create and manage notes with a clean distraction-free editor.
+                </p>
+            </div>
+
+
+            <div class="feature-card">
+                <i class="bi bi-folder2-open"></i>
+                <h3>Organized Workspace</h3>
+                <p>
+                    Keep your files and folders structured like a real knowledge base.
+                </p>
+            </div>
+
+
+            <div class="feature-card">
+                <i class="bi bi-cloud"></i>
+                <h3>Available Anywhere</h3>
+                <p>
+                    Access your notes from any device.
+                </p>
+            </div>
+
+        </section>
+
+
+    </div>
+
+
+    <style>
+
+        .shard-home {
+            min-height: calc(100vh - 120px);
         }
-    }, false);
-</script>
+
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+
+        .hero-logo {
+            width: 90px;
+            margin-bottom: 20px;
+        }
+
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+        }
+
+
+            .hero h1 span {
+                background: linear-gradient(90deg,#0B54FE,#FC0FC0);
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+
+
+        .hero p {
+            max-width: 650px;
+            margin: 20px auto;
+            font-size: 18px;
+            color: #6b7280;
+        }
+
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+
+        .feature-card {
+            padding: 25px;
+            border-radius: 18px;
+            background: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,.08);
+        }
+
+
+            .feature-card i {
+                font-size: 35px;
+                color: #2563eb;
+            }
+
+
+            .feature-card h3 {
+                margin-top: 15px;
+            }
+
+    </style>
+}
+
+

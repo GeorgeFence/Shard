@@ -1,0 +1,574 @@
+﻿@{
+    Layout = null;
+}
+
+
+<div class="explorer">
+
+    <div class="explorer-toolbar">
+
+        <button id="backBtn">
+            <i class="bi bi-arrow-left"></i>
+        </button>
+
+        <button id="forwardBtn">
+            <i class="bi bi-arrow-right"></i>
+        </button>
+
+        <button id="refreshBtn">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+
+
+        <div class="address-bar">
+            <i class="bi bi-folder"></i>
+            <span id="pathText">Shard Drive</span>
+        </div>
+
+
+        <button id="newFileBtn">
+            <i class="bi bi-file-earmark-plus"></i>
+        </button>
+
+
+        <button id="newFolderBtn">
+            <i class="bi bi-folder-plus"></i>
+        </button>
+
+    </div>
+
+
+
+    <div class="explorer-body">
+
+
+        <aside class="sidebar">
+
+            <div class="side-title">
+                Quick Access
+            </div>
+
+
+            <div class="side-item active"
+                 onclick="navigate('')">
+
+                <i class="bi bi-house"></i>
+                Home
+
+            </div>
+
+
+            <div class="side-title">
+                This PC
+            </div>
+
+
+            <div class="side-item"
+                 onclick="navigate('Documents')">
+
+                <i class="bi bi-folder"></i>
+                Documents
+
+            </div>
+
+
+            <div class="side-item"
+                 onclick="navigate('School')">
+
+                <i class="bi bi-mortarboard"></i>
+                School
+
+            </div>
+
+
+            <div class="side-item"
+                 onclick="navigate('Projects')">
+
+                <i class="bi bi-code-slash"></i>
+                Projects
+
+            </div>
+
+
+        </aside>
+
+
+
+
+        <main class="files">
+
+            <div id="fileGrid"
+                 class="file-grid">
+            </div>
+
+
+        </main>
+
+
+    </div>
+
+</div>
+
+
+
+
+
+<style>
+
+    .explorer {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        font-family: "Segoe UI";
+    }
+
+
+    .explorer-toolbar {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 12px;
+        border-bottom: 1px solid #ddd;
+    }
+
+
+
+        .explorer-toolbar button {
+            width: 35px;
+            height: 35px;
+            border: 0;
+            background: none;
+            border-radius: 8px;
+        }
+
+
+            .explorer-toolbar button:hover {
+                background: #eee;
+            }
+
+
+
+    .address-bar {
+        flex: 1;
+        height: 34px;
+        background: #f3f3f3;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 15px;
+    }
+
+
+
+
+    .explorer-body {
+        flex: 1;
+        display: flex;
+    }
+
+
+
+    .sidebar {
+        width: 220px;
+        border-right: 1px solid #ddd;
+        padding: 10px;
+    }
+
+
+
+    .side-title {
+        font-size: 12px;
+        color: #777;
+        margin: 15px 8px;
+    }
+
+
+
+    .side-item {
+        padding: 10px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+
+
+        .side-item:hover {
+            background: #eee;
+        }
+
+
+
+        .side-item.active {
+            background: #e5f1ff;
+        }
+
+
+
+    .files {
+        flex: 1;
+        padding: 20px;
+    }
+
+
+
+    .file-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill,120px);
+        gap: 20px;
+    }
+
+
+
+    .file {
+        text-align: center;
+        padding: 15px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+
+
+        .file:hover {
+            background: #e5f1ff;
+        }
+
+
+
+        .file i {
+            font-size: 45px;
+            display: block;
+        }
+
+
+
+    .folder-icon {
+        color: #ffc83d;
+    }
+
+
+
+    .file-icon {
+        color: #2563eb;
+    }
+
+</style>
+
+
+
+
+
+<script>
+
+
+    let currentPath = "";
+
+    let backStack=[];
+    let forwardStack=[];
+
+
+
+    async function loadFolder(path)
+    {
+
+        let response =
+            await fetch(
+                "/Files/Index?path="
+                + encodeURIComponent(path)
+            );
+
+
+        if(!response.ok)
+        {
+            alert("Cannot open folder");
+            return;
+        }
+
+
+
+        let data =
+            await response.json();
+
+
+
+        currentPath = path;
+
+
+
+        document
+        .getElementById("pathText")
+        .innerText =
+            path || "Shard Drive";
+
+
+
+        render(data);
+
+
+
+    }
+
+
+
+
+    function render(data)
+    {
+
+        let grid =
+            document.getElementById("fileGrid");
+
+
+        grid.innerHTML="";
+
+
+
+        data.folders.forEach(folder=>{
+
+
+            let div=document.createElement("div");
+
+            div.className="file";
+
+
+            div.innerHTML=`
+
+            <i class="bi bi-folder-fill folder-icon"></i>
+
+            ${folder}
+
+            `;
+
+
+
+            div.onclick=()=>{
+
+
+                backStack.push(currentPath);
+
+                forwardStack=[];
+
+
+                let next =
+                    currentPath
+                    ? currentPath+"/"+folder
+                    : folder;
+
+
+                loadFolder(next);
+
+
+            };
+
+
+            grid.appendChild(div);
+
+
+        });
+
+
+
+
+        data.files.forEach(file=>{
+
+
+            let div=document.createElement("div");
+
+
+            div.className="file";
+
+
+            div.innerHTML=`
+
+            <i class="bi bi-file-earmark-text file-icon"></i>
+
+            ${file}
+
+            `;
+
+
+
+            div.onclick=()=>openFile(file);
+
+
+
+            grid.appendChild(div);
+
+
+        });
+
+
+    }
+
+
+
+
+    async function openFile(file)
+    {
+
+        let path =
+            currentPath
+            ? currentPath+"/"+file
+            : file;
+
+
+
+        let res =
+            await fetch(
+                "/Files/Open?path="
+                +encodeURIComponent(path)
+            );
+
+
+
+        let data =
+            await res.json();
+
+
+
+        console.log(
+            "OPEN FILE",
+            data
+        );
+
+
+        // zde později napojíš editor
+
+    }
+
+
+
+
+    function navigate(path)
+    {
+
+        backStack.push(currentPath);
+
+        forwardStack=[];
+
+        loadFolder(path);
+
+    }
+
+
+
+    document
+    .getElementById("refreshBtn")
+    .onclick=()=>loadFolder(currentPath);
+
+
+
+
+    document
+    .getElementById("backBtn")
+    .onclick=()=>{
+
+
+        if(backStack.length)
+        {
+
+            forwardStack.push(currentPath);
+
+
+            let path =
+                backStack.pop();
+
+
+            loadFolder(path);
+
+        }
+
+
+    };
+
+
+
+
+    document
+    .getElementById("forwardBtn")
+    .onclick=()=>{
+
+
+        if(forwardStack.length)
+        {
+
+            backStack.push(currentPath);
+
+
+            let path =
+                forwardStack.pop();
+
+
+            loadFolder(path);
+
+        }
+
+
+    };
+
+
+
+
+
+    document
+    .getElementById("newFileBtn")
+    .onclick=async()=>{
+
+
+        let name =
+            prompt("File name");
+
+
+        if(!name)
+            return;
+
+
+
+        await fetch(
+            "/Files/Save?path="
+            +encodeURIComponent(
+                currentPath+"/"+name
+            ),
+            {
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:""
+
+            });
+
+
+
+        loadFolder(currentPath);
+
+
+    };
+
+
+
+
+
+    document
+    .getElementById("newFolderBtn")
+    .onclick=()=>{
+
+        alert(
+            "Folder create endpoint missing"
+        );
+
+    };
+
+
+
+
+
+    loadFolder("");
+
+</script>
