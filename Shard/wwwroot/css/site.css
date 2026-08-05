@@ -83,3 +83,69 @@ html, body {
 .menuContainer{
     z-index:1001;
 }
+
+#bottomStatusBar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    background: #f8f9fa;
+    border-top: 1px solid #ddd;
+    font-family: "Segoe UI", sans-serif;
+    font-size: 13px;
+    z-index: 99999;
+}
+
+
+
+.status-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+
+    .status-section i {
+        color: #2563eb;
+    }
+
+
+
+.status-divider {
+    width: 1px;
+    height: 16px;
+    background: #ccc;
+    margin: 0 8px;
+}
+
+
+
+.status-progress {
+    width: 160px;
+    height: 8px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
+
+#statusProgressFill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient( 90deg, #2563eb, #ec4899 );
+    transition: .3s;
+}
+
+
+
+#statusProgressText {
+    width: 35px;
+    text-align: right;
+}

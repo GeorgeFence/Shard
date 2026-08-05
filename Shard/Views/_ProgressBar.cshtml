@@ -1,0 +1,178 @@
+﻿@{
+    Layout = null;
+}
+
+<div class="aw-progress-wrapper">
+
+    <div class="aw-progress">
+
+        <div id="awProgressFill" class="aw-progress-fill"></div>
+
+        <span id="awProgressText">
+            0%
+        </span>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .aw-progress-wrapper {
+        width: 300px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+    }
+
+
+    .aw-progress {
+        width: 100%;
+        height: 100%;
+        border: 3px solid #666;
+        background: transparent;
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        font-family: "Segoe UI", system-ui;
+    }
+
+
+
+    .aw-progress-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 0%;
+        background: #33b5e5;
+        transition: width .2s linear;
+        overflow: hidden;
+    }
+
+
+
+        .aw-progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -60px;
+            width: 60px;
+            height: 100%;
+            background: repeating-linear-gradient( 45deg, rgba(255,255,255,.35) 0px, rgba(255,255,255,.35) 8px, transparent 8px, transparent 16px );
+            animation: progressStripe 1s linear infinite;
+        }
+
+
+
+    #awProgressText {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-shadow: 0 1px 2px black;
+        z-index: 5;
+        pointer-events: none;
+    }
+
+
+
+    @@keyframes progressStripe {
+
+        from {
+            transform: translateX(0);
+        }
+
+
+        to {
+            transform: translateX(120px);
+        }
+    }
+
+</style>
+
+
+
+<script>
+
+    (function(){
+
+        let currentProgress = 0;
+        let targetProgress = 0;
+
+
+        function animateProgress()
+        {
+
+            if(Math.abs(targetProgress-currentProgress) < 0.5)
+            {
+                currentProgress = targetProgress;
+            }
+            else
+            {
+                currentProgress +=
+                    (targetProgress-currentProgress) * 0.08;
+            }
+
+
+            document
+            .getElementById("awProgressFill")
+            .style.width =
+                currentProgress + "%";
+
+
+            requestAnimationFrame(
+                animateProgress
+            );
+
+        }
+
+
+        animateProgress();
+
+
+
+        window.setProgress = function(value)
+        {
+
+            value =
+                Math.max(
+                    0,
+                    Math.min(
+                        100,
+                        value
+                    )
+                );
+
+
+            targetProgress = value;
+
+
+            document
+            .getElementById("awProgressText")
+            .innerText =
+                Math.round(value) + "%";
+
+        }
+
+
+
+        window.setProgressText = function(text)
+        {
+
+            document
+            .getElementById("awProgressText")
+            .innerText =
+                text;
+
+        }
+
+
+    })();
+
+</script>

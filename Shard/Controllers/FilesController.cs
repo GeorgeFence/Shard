@@ -6,6 +6,7 @@ using Shard.Data;
 namespace Shard.Controllers;
 
 [Authorize]
+[Route("files")]
 public class FilesController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -25,6 +26,11 @@ public class FilesController : Controller
             _environment.ContentRootPath,
             "UserFiles"
         );
+        
+        if( !Directory.Exists( _storageRoot ))
+        {
+            Directory.CreateDirectory( _storageRoot );
+        }
     }
     [HttpGet("/explorer")]
     public async Task<IActionResult> GetExplorer()
@@ -77,9 +83,22 @@ public class FilesController : Controller
             user.Id
         );
 
-
-        Directory.CreateDirectory(folder);
-
+        if(!Directory.Exists(folder))
+        {
+            Directory.CreateDirectory(folder);
+        }
+        if(!Directory.Exists(Path.Combine(folder, "Documents")))
+        {
+            Directory.CreateDirectory(Path.Combine(folder, "Documents"));
+        }
+        if(!Directory.Exists(Path.Combine(folder, "School")))
+        {
+            Directory.CreateDirectory(Path.Combine(folder, "School"));
+        }
+        if(!Directory.Exists(Path.Combine(folder, "Projects")))
+        {
+            Directory.CreateDirectory(Path.Combine(folder, "Projects"));
+        }
 
         return folder;
     }
@@ -100,7 +119,7 @@ public class FilesController : Controller
 
 
 
-    [HttpGet]
+    [HttpGet("Index")]
     public async Task<IActionResult> Index(string? path)
     {
         var userFolder = await GetUserFolder();
@@ -153,7 +172,7 @@ public class FilesController : Controller
 
 
 
-    [HttpGet]
+    [HttpGet("Open")]
     public async Task<IActionResult> Open(string path)
     {
         var userFolder = await GetUserFolder();
@@ -192,7 +211,7 @@ public class FilesController : Controller
 
 
 
-    [HttpPost]
+    [HttpPost("Save")]
     public async Task<IActionResult> Save(
         string path,
         [FromBody] string content)

@@ -37,11 +37,66 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container-fluid text-center">
-            &copy; 2026 - Shard - <a href="https://nullware.app/">NullWare</a>
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <div id="bottomStatusBar">
+
+            <div class="status-section left">
+
+                <i class="bi bi-person-circle"></i>
+
+                <span>
+                    @User.Identity.Name
+                </span>
+
+
+                <span class="status-divider"></span>
+
+
+                <i class="bi bi-file-earmark-text"></i>
+
+                <span id="documentInfo">
+                    0 pages
+                </span>
+
+            </div>
+
+
+
+            <div class="status-section right">
+
+
+                <span id="statusMessage">
+                    Ready
+                </span>
+
+
+                <div class="status-progress">
+
+                    <div id="statusProgressFill"></div>
+
+                </div>
+
+
+                <span id="statusProgressText">
+                    0%
+                </span>
+
+
+            </div>
+
+
         </div>
-    </footer>
+    }
+        else
+        {
+        <footer class="border-top footer text-muted">
+            <div class="container-fluid text-center">
+                &copy; 2026 - Shard - <a href="https://nullware.app/">NullWare</a>
+            </div>
+        </footer>
+        }
+
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

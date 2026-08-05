@@ -158,48 +158,10 @@
 
     <iframe src="/explorer"
         width="100%"
-        height="600"
-        style="border:none; overflow:hidden;"
-        title="Fike Explorer">
+        height="100%"
+            style="border:none; overflow:hidden; display:flex; flex-direction:column;"
+        title="File Explorer">
 </iframe>
-
-
-    <div class="file-tree">
-
-        @if (ViewBag.Folders != null)
-        {
-            foreach (string folder in ViewBag.Folders)
-            {
-                <div class="tree-item folder">
-                    <i class="bi bi-chevron-right"></i>
-                    <i class="bi bi-folder-fill"></i>
-                    @folder
-                </div>
-            }
-        }
-
-
-        @if (ViewBag.Files != null)
-        {
-            foreach (string file in ViewBag.Files)
-            {
-                <div class="tree-item file">
-                    <i class="bi bi-file-earmark-text"></i>
-                    @file
-                </div>
-            }
-        }
-
-
-        @if ((ViewBag.Files == null || ViewBag.Files.Count == 0) &&
-             (ViewBag.Folders == null || ViewBag.Folders.Count == 0))
-        {
-            <div style="padding:10px;color:#6b7280;">
-                Empty workspace
-            </div>
-        }
-
-    </div>
 
 
     <div class="menu-bottom">

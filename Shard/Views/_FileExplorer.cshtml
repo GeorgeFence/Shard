@@ -1,11 +1,11 @@
 ﻿@{
-    Layout = null;
+    Layout = "~/Views/Shared/_IframeLayout.cshtml";
 }
 
 
 <div class="explorer">
 
-    <div class="explorer-toolbar">
+    <div class="toolbar">
 
         <button id="backBtn">
             <i class="bi bi-arrow-left"></i>
@@ -20,9 +20,14 @@
         </button>
 
 
-        <div class="address-bar">
-            <i class="bi bi-folder"></i>
-            <span id="pathText">Shard Drive</span>
+        <div class="address">
+
+            <i class="bi bi-folder-fill"></i>
+
+            <span id="pathText">
+                Shard Drive
+            </span>
+
         </div>
 
 
@@ -35,53 +40,56 @@
             <i class="bi bi-folder-plus"></i>
         </button>
 
+
     </div>
 
 
 
-    <div class="explorer-body">
+
+    <div class="content">
 
 
         <aside class="sidebar">
 
-            <div class="side-title">
+            <h6>
                 Quick Access
-            </div>
+            </h6>
 
 
-            <div class="side-item active"
+            <div class="item active"
                  onclick="navigate('')">
 
-                <i class="bi bi-house"></i>
+                <i class="bi bi-house-fill"></i>
                 Home
 
             </div>
 
 
-            <div class="side-title">
-                This PC
-            </div>
+
+            <h6>
+                Folders
+            </h6>
 
 
-            <div class="side-item"
+            <div class="item"
                  onclick="navigate('Documents')">
 
-                <i class="bi bi-folder"></i>
+                <i class="bi bi-folder-fill"></i>
                 Documents
 
             </div>
 
 
-            <div class="side-item"
+            <div class="item"
                  onclick="navigate('School')">
 
-                <i class="bi bi-mortarboard"></i>
+                <i class="bi bi-mortarboard-fill"></i>
                 School
 
             </div>
 
 
-            <div class="side-item"
+            <div class="item"
                  onclick="navigate('Projects')">
 
                 <i class="bi bi-code-slash"></i>
@@ -98,7 +106,7 @@
         <main class="files">
 
             <div id="fileGrid"
-                 class="file-grid">
+                 class="grid">
             </div>
 
 
@@ -106,6 +114,44 @@
 
 
     </div>
+
+
+</div>
+
+
+
+<div id="dialog"
+     class="dialog hidden">
+
+
+    <div class="dialog-box">
+
+
+        <h4>
+            New XML file
+        </h4>
+
+
+        <input id="fileName"
+               placeholder="filename" />
+
+
+        <div class="dialog-buttons">
+
+            <button id="cancel">
+                Cancel
+            </button>
+
+
+            <button id="create">
+                Create
+            </button>
+
+        </div>
+
+
+    </div>
+
 
 </div>
 
@@ -115,16 +161,24 @@
 
 <style>
 
+    body {
+        margin: 0;
+    }
+
+
     .explorer {
         height: 100vh;
         display: flex;
         flex-direction: column;
-        font-family: "Segoe UI";
+        font-family: "Segoe UI",system-ui;
+        background: #fff;
+        color: #202020;
     }
 
 
-    .explorer-toolbar {
-        height: 50px;
+
+    .toolbar {
+        height: 52px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -134,24 +188,26 @@
 
 
 
-        .explorer-toolbar button {
-            width: 35px;
-            height: 35px;
+        .toolbar button {
+            width: 36px;
+            height: 36px;
             border: 0;
             background: none;
             border-radius: 8px;
+            cursor: pointer;
         }
 
 
-            .explorer-toolbar button:hover {
+
+            .toolbar button:hover {
                 background: #eee;
             }
 
 
 
-    .address-bar {
+    .address {
         flex: 1;
-        height: 34px;
+        height: 36px;
         background: #f3f3f3;
         border-radius: 8px;
         display: flex;
@@ -162,8 +218,7 @@
 
 
 
-
-    .explorer-body {
+    .content {
         flex: 1;
         display: flex;
     }
@@ -171,52 +226,53 @@
 
 
     .sidebar {
-        width: 220px;
+        width: 230px;
         border-right: 1px solid #ddd;
-        padding: 10px;
+        padding: 12px;
     }
 
 
 
-    .side-title {
-        font-size: 12px;
-        color: #777;
-        margin: 15px 8px;
-    }
+        .sidebar h6 {
+            margin: 18px 8px 8px;
+            color: #777;
+            font-size: 12px;
+        }
 
 
 
-    .side-item {
-        padding: 10px;
+    .item {
         display: flex;
-        gap: 10px;
         align-items: center;
+        gap: 12px;
+        padding: 10px;
         border-radius: 8px;
         cursor: pointer;
     }
 
 
 
-        .side-item:hover {
+        .item:hover {
             background: #eee;
         }
 
 
 
-        .side-item.active {
-            background: #e5f1ff;
+        .item.active {
+            background: #dbeafe;
+            color: #2563eb;
         }
 
 
 
     .files {
         flex: 1;
-        padding: 20px;
+        padding: 25px;
     }
 
 
 
-    .file-grid {
+    .grid {
         display: grid;
         grid-template-columns: repeat(auto-fill,120px);
         gap: 20px;
@@ -225,9 +281,9 @@
 
 
     .file {
-        text-align: center;
         padding: 15px;
-        border-radius: 10px;
+        text-align: center;
+        border-radius: 12px;
         cursor: pointer;
     }
 
@@ -240,20 +296,82 @@
 
 
         .file i {
-            font-size: 45px;
             display: block;
+            font-size: 45px;
+            margin-bottom: 8px;
         }
 
 
 
-    .folder-icon {
-        color: #ffc83d;
+    .folder {
+        color: #fbbf24;
     }
 
 
 
-    .file-icon {
+    .xml {
         color: #2563eb;
+    }
+
+
+
+    .dialog {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+
+        .dialog.hidden {
+            display: none;
+        }
+
+
+
+    .dialog-box {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        width: 320px;
+        box-shadow: 0 10px 40px #0004;
+    }
+
+
+
+        .dialog-box input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+
+
+    .dialog-buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+
+
+        .dialog-buttons button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 0;
+            cursor: pointer;
+        }
+
+
+
+    #create {
+        background: #2563eb;
+        color: white;
     }
 
 </style>
@@ -264,39 +382,62 @@
 
 <script>
 
-
-    let currentPath = "";
+    let currentPath="";
 
     let backStack=[];
+
     let forwardStack=[];
+
+
+
+    function progress(value, text)
+    {
+        if(window.setProgress)
+            setProgress(value);
+
+        if(window.setProgressText)
+            setProgressText(text ?? (value + "%"));
+    }
+
 
 
 
     async function loadFolder(path)
     {
 
-        let response =
+        progress(10,"Loading folder...");
+
+
+        let res =
             await fetch(
                 "/Files/Index?path="
-                + encodeURIComponent(path)
+                +encodeURIComponent(path)
             );
 
 
-        if(!response.ok)
+        progress(60,"Reading files...");
+
+
+        if(!res.ok)
         {
-            alert("Cannot open folder");
+            progress(100,"Error");
+
+            setTimeout(()=>{
+                progress(0,"0%");
+            },1000);
+
             return;
         }
 
 
-
         let data =
-            await response.json();
+            await res.json();
 
 
+        progress(85,"Rendering...");
 
-        currentPath = path;
 
+        currentPath=path;
 
 
         document
@@ -305,12 +446,22 @@
             path || "Shard Drive";
 
 
-
         render(data);
 
 
+        progress(100,"Done");
+
+
+        setTimeout(()=>{
+
+            progress(0,"0%");
+
+        },700);
 
     }
+
+
+
 
 
 
@@ -329,17 +480,17 @@
         data.folders.forEach(folder=>{
 
 
-            let div=document.createElement("div");
+            let div =
+                document.createElement("div");
+
 
             div.className="file";
 
 
-            div.innerHTML=`
-
-            <i class="bi bi-folder-fill folder-icon"></i>
-
+            div.innerHTML=
+            `
+            <i class="bi bi-folder-fill folder"></i>
             ${folder}
-
             `;
 
 
@@ -352,14 +503,11 @@
                 forwardStack=[];
 
 
-                let next =
+                loadFolder(
                     currentPath
                     ? currentPath+"/"+folder
-                    : folder;
-
-
-                loadFolder(next);
-
+                    : folder
+                );
 
             };
 
@@ -372,23 +520,24 @@
 
 
 
+
+
+
         data.files.forEach(file=>{
 
 
-            let div=document.createElement("div");
+            let div =
+                document.createElement("div");
 
 
             div.className="file";
 
 
-            div.innerHTML=`
-
-            <i class="bi bi-file-earmark-text file-icon"></i>
-
+            div.innerHTML=
+            `
+            <i class="bi bi-file-earmark-code xml"></i>
             ${file}
-
             `;
-
 
 
             div.onclick=()=>openFile(file);
@@ -401,7 +550,30 @@
         });
 
 
+
+        let count =
+            data.files.length
+            +
+            data.folders.length;
+
+
+
+        let counter =
+            document.getElementById("fileCount");
+
+
+        if(counter)
+        {
+            counter.innerText =
+                count + " items";
+        }
+
+
     }
+
+
+
+
 
 
 
@@ -416,6 +588,10 @@
 
 
 
+        progress(15,"Opening file...");
+
+
+
         let res =
             await fetch(
                 "/Files/Open?path="
@@ -424,20 +600,34 @@
 
 
 
+        progress(70,"Loading content...");
+
+
+
         let data =
             await res.json();
 
 
 
-        console.log(
-            "OPEN FILE",
-            data
-        );
+        console.log(data);
 
 
-        // zde později napojíš editor
+
+        progress(100,"Opened");
+
+
+
+        setTimeout(()=>{
+
+            progress(0,"0%");
+
+        },700);
+
 
     }
+
+
+
 
 
 
@@ -449,15 +639,28 @@
 
         forwardStack=[];
 
+
         loadFolder(path);
 
     }
 
 
 
+
+
+
+
+
     document
     .getElementById("refreshBtn")
-    .onclick=()=>loadFolder(currentPath);
+    .onclick=()=>{
+
+        loadFolder(currentPath);
+
+    };
+
+
+
 
 
 
@@ -473,16 +676,17 @@
             forwardStack.push(currentPath);
 
 
-            let path =
-                backStack.pop();
-
-
-            loadFolder(path);
+            loadFolder(
+                backStack.pop()
+            );
 
         }
 
-
     };
+
+
+
+
 
 
 
@@ -498,16 +702,24 @@
             backStack.push(currentPath);
 
 
-            let path =
-                forwardStack.pop();
-
-
-            loadFolder(path);
+            loadFolder(
+                forwardStack.pop()
+            );
 
         }
 
-
     };
+
+
+
+
+
+
+
+
+    const dialog =
+    document.getElementById("dialog");
+
 
 
 
@@ -515,11 +727,50 @@
 
     document
     .getElementById("newFileBtn")
+    .onclick=()=>{
+
+
+        dialog.classList.remove("hidden");
+
+
+    };
+
+
+
+
+
+
+
+    document
+    .getElementById("cancel")
+    .onclick=()=>{
+
+
+        dialog.classList.add("hidden");
+
+
+    };
+
+
+
+
+
+
+
+
+
+    document
+    .getElementById("create")
     .onclick=async()=>{
 
 
         let name =
-            prompt("File name");
+            document
+            .getElementById("fileName")
+            .value
+            .trim();
+
+
 
 
         if(!name)
@@ -527,43 +778,89 @@
 
 
 
+
+
+        if(!name.toLowerCase().endsWith(".xml"))
+            name += ".xml";
+
+
+
+
+
+        let path =
+            currentPath
+            ?
+            currentPath+"/"+name
+            :
+            name;
+
+
+
+
+
+        progress(10,"Creating file...");
+
+
+
+
         await fetch(
             "/Files/Save?path="
-            +encodeURIComponent(
-                currentPath+"/"+name
-            ),
+            +encodeURIComponent(path),
             {
 
             method:"POST",
 
-            headers:{
-                "Content-Type":"application/json"
+
+            headers:
+            {
+                "Content-Type":
+                "application/json"
             },
 
-            body:""
+
+            body:
+            JSON.stringify("")
 
             });
 
 
 
-        loadFolder(currentPath);
+
+        progress(80,"Refreshing...");
+
+
+
+
+        dialog.classList.add("hidden");
+
+
+
+
+        document
+        .getElementById("fileName")
+        .value="";
+
+
+
+
+        await loadFolder(currentPath);
+
+
+
+
+        progress(100,"Created");
+
+
+
+        setTimeout(()=>{
+
+            progress(0,"0%");
+
+        },700);
 
 
     };
 
-
-
-
-
-    document
-    .getElementById("newFolderBtn")
-    .onclick=()=>{
-
-        alert(
-            "Folder create endpoint missing"
-        );
-
-    };
 
 
 

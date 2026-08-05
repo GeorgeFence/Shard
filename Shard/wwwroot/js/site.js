@@ -1,4 +1,63 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿
+function updateStatusProgress(percent, message) {
+    const bar =
+        document.getElementById("statusProgressFill");
 
-// Write your JavaScript code.
+    const text =
+        document.getElementById("statusProgressText");
+
+    const msg =
+        document.getElementById("statusMessage");
+
+
+    if (!bar)
+        return;
+
+
+    bar.style.width =
+        percent + "%";
+
+
+    text.innerText =
+        percent + "%";
+
+
+    if (message)
+        msg.innerText = message;
+}
+function progress(value, text) {
+    value = Math.max(0, Math.min(100, value));
+
+
+    let fill =
+        document.getElementById("statusProgressFill");
+
+
+    let label =
+        document.getElementById("statusProgressText");
+
+
+    let message =
+        document.getElementById("statusMessage");
+
+
+
+    if (fill) {
+        fill.style.width =
+            value + "%";
+    }
+
+
+
+    if (label) {
+        label.innerText =
+            Math.round(value) + "%";
+    }
+
+
+
+    if (message && text) {
+        message.innerText =
+            text;
+    }
+}
