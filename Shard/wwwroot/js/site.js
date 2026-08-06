@@ -61,3 +61,28 @@ function progress(value, text) {
             text;
     }
 }
+window.progress = function (value, text) {
+
+    value = Math.max(0, Math.min(100, value));
+
+    const fill =
+        document.getElementById("statusProgressFill");
+
+    const label =
+        document.getElementById("statusProgressText");
+
+    const message =
+        document.getElementById("statusMessage");
+
+
+    if (fill)
+        fill.style.width = value + "%";
+
+
+    if (label)
+        label.innerText = Math.round(value) + "%";
+
+
+    if (message && text)
+        message.innerText = text;
+};

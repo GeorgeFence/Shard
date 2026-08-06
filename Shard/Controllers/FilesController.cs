@@ -251,4 +251,44 @@ public class FilesController : Controller
 
         return Ok();
     }
+
+    [HttpPost("CreateFolder")]
+    public async Task<IActionResult> CreateFolder(
+        string path)
+    {
+        var userFolder = await GetUserFolder();
+
+
+        if (string.IsNullOrWhiteSpace(path))
+            return BadRequest();
+
+
+
+        var folderPath = Path.Combine(
+            userFolder,
+            path
+        );
+
+
+        if (!IsSafePath(userFolder, folderPath))
+            return Forbid();
+
+
+
+        var directory = Path.GetDirectoryName(folderPath);
+
+
+        if (directory != null)
+            Directory.CreateDirectory(directory);
+
+
+
+        await System.IO.File.WriteAllTextAsync(
+            folderPath,
+            ""
+        );
+
+
+        return Ok();
+    }
 }

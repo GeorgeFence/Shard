@@ -368,56 +368,38 @@
         }
 
 
-
     #create {
         background: #2563eb;
         color: white;
     }
-
 </style>
 
-
-
-
-
 <script>
-
     let currentPath="";
-
     let backStack=[];
-
     let forwardStack=[];
 
-
-
-    function progress(value, text)
-    {
-        if(window.setProgress)
-            setProgress(value);
-
-        if(window.setProgressText)
-            setProgressText(text ?? (value + "%"));
+    function progress(value, text) {
+        if (window.parent.parent.progress) {
+            window.parent.parent.progress(value, text);
+        }
+        else if (window.parent.progress) {
+            window.parent.progress(value, text);
+        }
+        else if (window.progress) {
+            window.progress(value, text);
+        }
     }
-
-
-
 
     async function loadFolder(path)
     {
-
         progress(10,"Loading folder...");
-
-
         let res =
             await fetch(
                 "/Files/Index?path="
                 +encodeURIComponent(path)
             );
-
-
         progress(60,"Reading files...");
-
-
         if(!res.ok)
         {
             progress(100,"Error");
@@ -428,169 +410,84 @@
 
             return;
         }
-
-
         let data =
             await res.json();
-
-
-        progress(85,"Rendering...");
-
-
+        progress(85, "Rendering...");
         currentPath=path;
-
 
         document
         .getElementById("pathText")
         .innerText =
             path || "Shard Drive";
-
-
         render(data);
-
-
         progress(100,"Done");
-
-
-        setTimeout(()=>{
-
-            progress(0,"0%");
-
-        },700);
-
+        setTimeout(() => {
+            progress(0, "Ready");
+        }, 700);
     }
-
-
-
-
-
-
 
     function render(data)
     {
-
         let grid =
             document.getElementById("fileGrid");
-
-
         grid.innerHTML="";
 
-
-
         data.folders.forEach(folder=>{
-
-
             let div =
                 document.createElement("div");
-
-
             div.className="file";
-
-
             div.innerHTML=
             `
             <i class="bi bi-folder-fill folder"></i>
             ${folder}
             `;
-
-
-
             div.onclick=()=>{
-
-
                 backStack.push(currentPath);
-
                 forwardStack=[];
-
-
                 loadFolder(
                     currentPath
                     ? currentPath+"/"+folder
                     : folder
                 );
-
             };
-
-
             grid.appendChild(div);
-
-
         });
 
-
-
-
-
-
-
         data.files.forEach(file=>{
-
-
             let div =
                 document.createElement("div");
-
-
             div.className="file";
-
-
             div.innerHTML=
             `
             <i class="bi bi-file-earmark-code xml"></i>
             ${file}
             `;
-
-
             div.onclick=()=>openFile(file);
-
-
-
             grid.appendChild(div);
-
-
         });
-
-
 
         let count =
             data.files.length
             +
             data.folders.length;
 
-
-
         let counter =
             document.getElementById("fileCount");
-
 
         if(counter)
         {
             counter.innerText =
                 count + " items";
         }
-
-
     }
-
-
-
-
-
-
-
-
     async function openFile(file)
     {
-
         let path =
             currentPath
             ? currentPath+"/"+file
             : file;
 
-
-
         progress(15,"Opening file...");
-
-
 
         let res =
             await fetch(
@@ -598,98 +495,41 @@
                 +encodeURIComponent(path)
             );
 
-
-
         progress(70,"Loading content...");
-
-
 
         let data =
             await res.json();
-
-
-
         console.log(data);
-
-
-
         progress(100,"Opened");
-
-
-
         setTimeout(()=>{
-
-            progress(0,"0%");
-
+            progress(0,"Ready");
         },700);
-
-
     }
-
-
-
-
-
-
 
     function navigate(path)
     {
-
         backStack.push(currentPath);
-
         forwardStack=[];
-
-
         loadFolder(path);
-
     }
-
-
-
-
-
-
-
 
     document
     .getElementById("refreshBtn")
     .onclick=()=>{
-
         loadFolder(currentPath);
-
     };
-
-
-
-
-
-
 
     document
     .getElementById("backBtn")
     .onclick=()=>{
-
-
         if(backStack.length)
         {
-
             forwardStack.push(currentPath);
-
-
             loadFolder(
                 backStack.pop()
             );
-
         }
-
     };
-
-
-
-
-
-
-
 
     document
     .getElementById("forwardBtn")
@@ -710,59 +550,24 @@
 
     };
 
-
-
-
-
-
-
-
     const dialog =
     document.getElementById("dialog");
-
-
-
-
-
 
     document
     .getElementById("newFileBtn")
     .onclick=()=>{
-
-
         dialog.classList.remove("hidden");
-
-
     };
-
-
-
-
-
-
 
     document
     .getElementById("cancel")
     .onclick=()=>{
-
-
         dialog.classList.add("hidden");
-
-
     };
-
-
-
-
-
-
-
-
 
     document
     .getElementById("create")
     .onclick=async()=>{
-
 
         let name =
             document
@@ -770,22 +575,11 @@
             .value
             .trim();
 
-
-
-
         if(!name)
             return;
 
-
-
-
-
         if(!name.toLowerCase().endsWith(".xml"))
             name += ".xml";
-
-
-
-
 
         let path =
             currentPath
@@ -794,77 +588,37 @@
             :
             name;
 
-
-
-
-
         progress(10,"Creating file...");
-
-
-
 
         await fetch(
             "/Files/Save?path="
             +encodeURIComponent(path),
             {
-
             method:"POST",
-
-
             headers:
             {
                 "Content-Type":
                 "application/json"
             },
-
-
             body:
             JSON.stringify("")
-
             });
-
-
-
 
         progress(80,"Refreshing...");
 
-
-
-
         dialog.classList.add("hidden");
-
-
-
 
         document
         .getElementById("fileName")
         .value="";
 
-
-
-
         await loadFolder(currentPath);
-
-
-
-
+        
         progress(100,"Created");
-
-
-
         setTimeout(()=>{
-
-            progress(0,"0%");
-
-        },700);
-
-
+            progress(0,"Ready");
+        },1500);
     };
-
-
-
-
-
 
     loadFolder("");
 
