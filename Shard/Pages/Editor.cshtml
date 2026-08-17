@@ -1,0 +1,171 @@
+﻿@page
+@model Shard.Pages.EditorModel
+@{
+}
+
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        #editorRoot {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #ribbonFrame {
+            width: 100%;
+            height: 105px;
+            border: 0;
+            flex-shrink: 0;
+            display: block;
+            background: white;
+        }
+
+        #editorFrame {
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            border: 0;
+            display: block;
+            background: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="editorRoot">
+
+    <iframe id="ribbonFrame"
+            src="/files/RibbonBar">
+    </iframe>
+
+    <iframe id="editorFrame"
+            src="/files/ViewIFrame?path=Documents/Test.html">
+    </iframe>
+
+</div>
+
+<script>
+
+    const ribbonFrame =
+        document.getElementById("ribbonFrame");
+
+    const editorFrame =
+        document.getElementById("editorFrame");
+
+
+    /*
+     * ================================================
+     * RIBBON -> EDITOR IFRAME
+     * ================================================
+     */
+
+    window.addEventListener("message", function (event) {
+
+        const data = event.data;
+
+        if (!data)
+            return;
+
+        if (data.type !== "shard-editor-command")
+            return;
+
+        console.log(
+            "Editor page received command:",
+            data
+        );
+
+        if (!editorFrame.contentWindow)
+            return;
+
+        editorFrame.contentWindow.postMessage(
+            data,
+            "*"
+        );
+
+    });
+
+
+    /*
+     * ================================================
+     * EDITOR IFRAME -> RIBBON
+     * ================================================
+     */
+
+    function sendToRibbon(data) {
+
+        if (!ribbonFrame.contentWindow)
+            return;
+
+        ribbonFrame.contentWindow.postMessage(
+            data,
+            "*"
+        );
+    }
+
+
+    /*
+     * ================================================
+     * VIEW IFRAME READY
+     * ================================================
+     */
+
+    editorFrame.addEventListener("load", function () {
+
+        console.log(
+            "ViewIFrame loaded."
+        );
+
+        sendToRibbon({
+            type: "shard-editor-ready"
+        });
+
+    });
+
+
+    /*
+     * ================================================
+     * RIBBON READY
+     * ================================================
+     */
+
+    ribbonFrame.addEventListener("load", function () {
+
+        console.log(
+            "Ribbon loaded."
+        );
+
+        if (!editorFrame.contentWindow)
+            return;
+
+        editorFrame.contentWindow.postMessage({
+            type: "shard-ribbon-ready"
+        }, "*");
+
+    });
+
+</script>
+
+</body>
+</html>

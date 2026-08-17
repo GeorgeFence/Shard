@@ -32,7 +32,7 @@ public class FilesController : Controller
             Directory.CreateDirectory( _storageRoot );
         }
     }
-    [HttpGet("/explorer")]
+    [HttpGet("explorer")]
     public async Task<IActionResult> GetExplorer()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -69,6 +69,16 @@ public class FilesController : Controller
 
 
         return View("~/Views/_FileExplorer.cshtml");
+    }
+    [HttpGet("ViewIFrame")]
+    public async Task<IActionResult> GetViewIFrame()
+    {
+        return View("~/Views/ViewIFrame.cshtml");
+    }
+    [HttpGet("RibbonBar")]
+    public IActionResult GetRibbonBar()
+    {
+        return View("~/Views/RibbonBarIFrame.cshtml");
     }
     private async Task<string> GetUserFolder()
     {

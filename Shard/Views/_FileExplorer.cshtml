@@ -2,7 +2,6 @@
     Layout = "~/Views/Shared/_IframeLayout.cshtml";
 }
 
-
 <div class="explorer">
 
     <div class="toolbar">
@@ -19,7 +18,6 @@
             <i class="bi bi-arrow-clockwise"></i>
         </button>
 
-
         <div class="address">
 
             <i class="bi bi-folder-fill"></i>
@@ -30,31 +28,24 @@
 
         </div>
 
-
         <button id="newFileBtn">
             <i class="bi bi-file-earmark-plus"></i>
         </button>
-
 
         <button id="newFolderBtn">
             <i class="bi bi-folder-plus"></i>
         </button>
 
-
     </div>
 
 
-
-
     <div class="content">
-
 
         <aside class="sidebar">
 
             <h6>
                 Quick Access
             </h6>
-
 
             <div class="item active"
                  onclick="navigate('')">
@@ -64,12 +55,9 @@
 
             </div>
 
-
-
             <h6>
                 Folders
             </h6>
-
 
             <div class="item"
                  onclick="navigate('Documents')">
@@ -79,7 +67,6 @@
 
             </div>
 
-
             <div class="item"
                  onclick="navigate('School')">
 
@@ -87,7 +74,6 @@
                 School
 
             </div>
-
 
             <div class="item"
                  onclick="navigate('Projects')">
@@ -97,10 +83,7 @@
 
             </div>
 
-
         </aside>
-
-
 
 
         <main class="files">
@@ -109,32 +92,22 @@
                  class="grid">
             </div>
 
-
         </main>
 
-
     </div>
-
-
 </div>
-
-
 
 <div id="dialog"
      class="dialog hidden">
 
-
     <div class="dialog-box">
 
-
         <h4>
-            New XML file
+            New HTML file
         </h4>
-
 
         <input id="fileName"
                placeholder="filename" />
-
 
         <div class="dialog-buttons">
 
@@ -142,22 +115,15 @@
                 Cancel
             </button>
 
-
             <button id="create">
                 Create
             </button>
 
         </div>
 
-
     </div>
 
-
 </div>
-
-
-
-
 
 <style>
 
@@ -165,17 +131,14 @@
         margin: 0;
     }
 
-
     .explorer {
         height: 100vh;
         display: flex;
         flex-direction: column;
-        font-family: "Segoe UI",system-ui;
+        font-family: "Segoe UI", system-ui;
         background: #fff;
         color: #202020;
     }
-
-
 
     .toolbar {
         height: 52px;
@@ -186,8 +149,6 @@
         border-bottom: 1px solid #ddd;
     }
 
-
-
         .toolbar button {
             width: 36px;
             height: 36px;
@@ -197,13 +158,9 @@
             cursor: pointer;
         }
 
-
-
             .toolbar button:hover {
                 background: #eee;
             }
-
-
 
     .address {
         flex: 1;
@@ -216,14 +173,10 @@
         padding: 0 15px;
     }
 
-
-
     .content {
         flex: 1;
         display: flex;
     }
-
-
 
     .sidebar {
         width: 230px;
@@ -231,15 +184,11 @@
         padding: 12px;
     }
 
-
-
         .sidebar h6 {
             margin: 18px 8px 8px;
             color: #777;
             font-size: 12px;
         }
-
-
 
     .item {
         display: flex;
@@ -250,50 +199,37 @@
         cursor: pointer;
     }
 
-
-
         .item:hover {
             background: #eee;
         }
-
-
 
         .item.active {
             background: #dbeafe;
             color: #2563eb;
         }
 
-
-
     .files {
         flex: 1;
         padding: 25px;
     }
 
-
-
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill,120px);
+        grid-template-columns: repeat(auto-fill, 120px);
         gap: 20px;
     }
-
-
 
     .file {
         padding: 15px;
         text-align: center;
         border-radius: 12px;
         cursor: pointer;
+        overflow: hidden;
     }
-
-
 
         .file:hover {
             background: #e5f1ff;
         }
-
-
 
         .file i {
             display: block;
@@ -301,19 +237,20 @@
             margin-bottom: 8px;
         }
 
-
-
     .folder {
         color: #fbbf24;
     }
 
-
-
-    .xml {
-        color: #2563eb;
+    .html {
+        color: #f97316;
     }
 
-
+    .file-name {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
     .dialog {
         position: fixed;
@@ -324,13 +261,9 @@
         justify-content: center;
     }
 
-
-
         .dialog.hidden {
             display: none;
         }
-
-
 
     .dialog-box {
         background: white;
@@ -340,16 +273,12 @@
         box-shadow: 0 10px 40px #0004;
     }
 
-
-
         .dialog-box input {
             width: 100%;
             padding: 10px;
             border-radius: 8px;
             border: 1px solid #ccc;
         }
-
-
 
     .dialog-buttons {
         margin-top: 20px;
@@ -358,8 +287,6 @@
         gap: 10px;
     }
 
-
-
         .dialog-buttons button {
             padding: 8px 16px;
             border-radius: 8px;
@@ -367,258 +294,462 @@
             cursor: pointer;
         }
 
-
     #create {
         background: #2563eb;
         color: white;
     }
+
 </style>
 
 <script>
-    let currentPath="";
-    let backStack=[];
-    let forwardStack=[];
+
+    let currentPath = "";
+
+    let backStack = [];
+
+    let forwardStack = [];
+
 
     function progress(value, text) {
-        if (window.parent.parent.progress) {
-            window.parent.parent.progress(value, text);
-        }
-        else if (window.parent.progress) {
-            window.parent.progress(value, text);
-        }
-        else if (window.progress) {
-            window.progress(value, text);
-        }
+
+        window.parent.parent.progress(
+            value,
+            text
+        );
+
     }
 
-    async function loadFolder(path)
-    {
-        progress(10,"Loading folder...");
-        let res =
-            await fetch(
-                "/Files/Index?path="
-                +encodeURIComponent(path)
-            );
-        progress(60,"Reading files...");
-        if(!res.ok)
-        {
-            progress(100,"Error");
+    async function loadFolder(path) {
 
-            setTimeout(()=>{
-                progress(0,"0%");
-            },1000);
+        progress(
+            10,
+            "Loading folder..."
+        );
 
-            return;
-        }
-        let data =
-            await res.json();
-        progress(85, "Rendering...");
-        currentPath=path;
+        try {
 
-        document
-        .getElementById("pathText")
-        .innerText =
-            path || "Shard Drive";
-        render(data);
-        progress(100,"Done");
-        setTimeout(() => {
-            progress(0, "Ready");
-        }, 700);
-    }
-
-    function render(data)
-    {
-        let grid =
-            document.getElementById("fileGrid");
-        grid.innerHTML="";
-
-        data.folders.forEach(folder=>{
-            let div =
-                document.createElement("div");
-            div.className="file";
-            div.innerHTML=
-            `
-            <i class="bi bi-folder-fill folder"></i>
-            ${folder}
-            `;
-            div.onclick=()=>{
-                backStack.push(currentPath);
-                forwardStack=[];
-                loadFolder(
-                    currentPath
-                    ? currentPath+"/"+folder
-                    : folder
+            const res =
+                await fetch(
+                    "/files/Index?path="
+                    + encodeURIComponent(path)
                 );
-            };
-            grid.appendChild(div);
-        });
 
-        data.files.forEach(file=>{
-            let div =
-                document.createElement("div");
-            div.className="file";
-            div.innerHTML=
-            `
-            <i class="bi bi-file-earmark-code xml"></i>
-            ${file}
-            `;
-            div.onclick=()=>openFile(file);
-            grid.appendChild(div);
-        });
 
-        let count =
-            data.files.length
-            +
-            data.folders.length;
+            if (!res.ok) {
 
-        let counter =
-            document.getElementById("fileCount");
+                progress(
+                    100,
+                    "Failed to load folder"
+                );
 
-        if(counter)
-        {
-            counter.innerText =
-                count + " items";
+                return;
+
+            }
+
+
+            progress(
+                60,
+                "Reading files..."
+            );
+
+
+            const data =
+                await res.json();
+
+
+            currentPath = path;
+
+
+            document
+                .getElementById("pathText")
+                .innerText =
+                path || "Shard Drive";
+
+
+            render(data);
+
+
+            progress(
+                100,
+                "Ready"
+            );
+
+
+            setTimeout(() => {
+
+                progress(
+                    0,
+                    "Ready"
+                );
+
+            }, 500);
+
         }
+        catch (error) {
+
+            console.error(error);
+
+            progress(
+                100,
+                "Error"
+            );
+
+        }
+
     }
-    async function openFile(file)
-    {
+
+    function render(data) {
+
+        const grid =
+            document.getElementById(
+                "fileGrid"
+            );
+
+
+        grid.innerHTML = "";
+
+        data.folders.forEach(folder => {
+
+            const div =
+                document.createElement("div");
+
+
+            div.className = "file";
+
+
+            div.innerHTML = `
+
+                    <i class="bi bi-folder-fill folder"></i>
+
+                    <span class="file-name">
+                        ${folder}
+                    </span>
+
+                `;
+
+
+            div.onclick = () => {
+
+                backStack.push(
+                    currentPath
+                );
+
+
+                forwardStack = [];
+
+
+                const newPath =
+                    currentPath
+                        ? currentPath + "/" + folder
+                        : folder;
+
+
+                loadFolder(
+                    newPath
+                );
+
+            };
+
+
+            grid.appendChild(div);
+
+        });
+
+        data.files.forEach(file => {
+
+            const div =
+                document.createElement("div");
+
+
+            div.className = "file";
+
+            const isHtml =
+                file
+                    .toLowerCase()
+                    .endsWith(".html");
+
+
+            const isXml =
+                file
+                    .toLowerCase()
+                    .endsWith(".xml");
+
+
+            div.innerHTML = `
+
+                    <i class="bi ${isHtml || isXml
+                    ? "bi-file-earmark-code html"
+                    : "bi-file-earmark"
+                }"></i>
+
+                    <span class="file-name">
+                        ${file}
+                    </span>
+
+                `;
+
+            div.onclick = () => {
+
+                openFile(
+                    file
+                );
+
+            };
+
+
+            grid.appendChild(div);
+
+        });
+
+    }
+
+    async function openFile(file) {
         let path =
             currentPath
-            ? currentPath+"/"+file
-            : file;
+                ? currentPath + "/" + file
+                : file;
 
-        progress(15,"Opening file...");
 
-        let res =
-            await fetch(
-                "/Files/Open?path="
-                +encodeURIComponent(path)
+        /*
+         * Explorer:
+         * window
+         *
+         * parent:
+         * hlavní iframe / menu
+         *
+         * parent.parent:
+         * Main stránka
+         */
+        window.parent.parent.location.href =
+            "/Editor?path=" +
+            encodeURIComponent(path);
+    }
+
+    function navigate(path) {
+
+        backStack.push(
+            currentPath
+        );
+
+        forwardStack = [];
+
+
+        loadFolder(
+            path
+        );
+
+    }
+
+    document
+        .getElementById("refreshBtn")
+        .onclick = () => {
+
+            loadFolder(
+                currentPath
             );
 
-        progress(70,"Loading content...");
-
-        let data =
-            await res.json();
-        console.log(data);
-        progress(100,"Opened");
-        setTimeout(()=>{
-            progress(0,"Ready");
-        },700);
-    }
-
-    function navigate(path)
-    {
-        backStack.push(currentPath);
-        forwardStack=[];
-        loadFolder(path);
-    }
+        };
 
     document
-    .getElementById("refreshBtn")
-    .onclick=()=>{
-        loadFolder(currentPath);
-    };
+        .getElementById("backBtn")
+        .onclick = () => {
 
-    document
-    .getElementById("backBtn")
-    .onclick=()=>{
-        if(backStack.length)
-        {
-            forwardStack.push(currentPath);
+            if (!backStack.length)
+                return;
+
+
+            forwardStack.push(
+                currentPath
+            );
+
+
             loadFolder(
                 backStack.pop()
             );
-        }
-    };
+
+        };
 
     document
-    .getElementById("forwardBtn")
-    .onclick=()=>{
+        .getElementById("forwardBtn")
+        .onclick = () => {
+
+            if (!forwardStack.length)
+                return;
 
 
-        if(forwardStack.length)
-        {
-
-            backStack.push(currentPath);
+            backStack.push(
+                currentPath
+            );
 
 
             loadFolder(
                 forwardStack.pop()
             );
 
-        }
+        };
 
-    };
 
     const dialog =
-    document.getElementById("dialog");
+        document.getElementById(
+            "dialog"
+        );
+
 
     document
-    .getElementById("newFileBtn")
-    .onclick=()=>{
-        dialog.classList.remove("hidden");
-    };
+        .getElementById("newFileBtn")
+        .onclick = () => {
+
+            dialog.classList.remove(
+                "hidden"
+            );
+
+        };
+
 
     document
-    .getElementById("cancel")
-    .onclick=()=>{
-        dialog.classList.add("hidden");
-    };
+        .getElementById("cancel")
+        .onclick = () => {
+
+            dialog.classList.add(
+                "hidden"
+            );
+
+        };
 
     document
-    .getElementById("create")
-    .onclick=async()=>{
+        .getElementById("create")
+        .onclick = async () => {
 
-        let name =
-            document
-            .getElementById("fileName")
-            .value
-            .trim();
+            let name =
+                document
+                    .getElementById(
+                        "fileName"
+                    )
+                    .value
+                    .trim();
 
-        if(!name)
-            return;
 
-        if(!name.toLowerCase().endsWith(".xml"))
-            name += ".xml";
+            if (!name)
+                return;
 
-        let path =
-            currentPath
-            ?
-            currentPath+"/"+name
-            :
-            name;
+            if (
+                !name
+                    .toLowerCase()
+                    .endsWith(".html")
+            ) {
 
-        progress(10,"Creating file...");
+                name += ".html";
 
-        await fetch(
-            "/Files/Save?path="
-            +encodeURIComponent(path),
-            {
-            method:"POST",
-            headers:
-            {
-                "Content-Type":
-                "application/json"
-            },
-            body:
-            JSON.stringify("")
-            });
+            }
 
-        progress(80,"Refreshing...");
 
-        dialog.classList.add("hidden");
+            const path =
+                currentPath
+                    ? currentPath + "/" + name
+                    : name;
 
-        document
-        .getElementById("fileName")
-        .value="";
 
-        await loadFolder(currentPath);
-        
-        progress(100,"Created");
-        setTimeout(()=>{
-            progress(0,"Ready");
-        },1500);
-    };
+            progress(
+                20,
+                "Creating file..."
+            );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/files/Save?path="
+                        + encodeURIComponent(path),
+                        {
+
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    `
+    <shard-document>
+
+        <shard-page
+            width="794"
+            height="1123">
+
+        </shard-page>
+
+    </shard-document>
+    `
+                                )
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP " +
+                        response.status
+                    );
+
+                }
+
+
+                progress(
+                    80,
+                    "Refreshing..."
+                );
+
+
+                dialog.classList.add(
+                    "hidden"
+                );
+
+
+                document
+                    .getElementById(
+                        "fileName"
+                    )
+                    .value = "";
+
+
+                await loadFolder(
+                    currentPath
+                );
+
+
+                progress(
+                    100,
+                    "File created"
+                );
+
+
+                setTimeout(() => {
+
+                    progress(
+                        0,
+                        "Ready"
+                    );
+
+                }, 500);
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                progress(
+                    100,
+                    "Failed to create file"
+                );
+
+            }
+
+        };
 
     loadFolder("");
 

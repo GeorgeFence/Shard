@@ -1,0 +1,2188 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+
+            font-family:
+                "Segoe UI",
+                system-ui,
+                sans-serif;
+
+            background: #f1f1f1;
+        }
+
+
+        #viewer {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            padding: 40px;
+        }
+
+
+        #documentContainer {
+            width: max-content;
+            min-width: 100%;
+            position: relative;
+        }
+
+
+        shard-document {
+            display: block;
+        }
+
+
+        shard-page {
+            display: block;
+            position: relative;
+
+            width: 794px;
+            height: 1123px;
+
+            margin:
+                0 auto 40px auto;
+
+            background: white;
+
+            box-shadow:
+                0 3px 15px rgba(0, 0, 0, .15);
+
+            overflow: hidden;
+        }
+
+
+        shard-text,
+        shard-image,
+        shard-table,
+        shard-shape,
+        shard-drawing {
+            position: absolute;
+            display: block;
+        }
+
+
+        shard-text {
+            white-space: pre-wrap;
+            overflow: hidden;
+
+            user-select: text;
+            cursor: pointer;
+        }
+
+
+        shard-text.editing {
+            outline: none;
+            cursor: text;
+            user-select: text;
+        }
+
+
+        shard-image {
+            cursor: pointer;
+        }
+
+
+        shard-image img {
+            display: block;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+
+            pointer-events: none;
+        }
+
+
+        shard-table {
+            cursor: pointer;
+        }
+
+
+        shard-table table {
+            width: 100%;
+            height: 100%;
+            border-collapse: collapse;
+        }
+
+
+        shard-table td,
+        shard-table th {
+            border: 1px solid #999;
+            padding: 6px;
+        }
+
+
+        shard-shape {
+            cursor: pointer;
+        }
+
+
+        shard-drawing {
+            cursor: pointer;
+        }
+
+
+        shard-drawing canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+
+        /* =====================================================
+           SELECTION
+           ===================================================== */
+
+        #selectionBox {
+            position: fixed;
+            display: none;
+
+            pointer-events: none;
+
+            border:
+                1px solid #2563eb;
+
+            z-index: 9999;
+        }
+
+
+        #selectionBox.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           RESIZE HANDLES
+           ===================================================== */
+
+        .resize-handle {
+            position: absolute;
+
+            width: 8px;
+            height: 8px;
+
+            background: white;
+
+            border:
+                1px solid #2563eb;
+
+            border-radius: 2px;
+
+            pointer-events: auto;
+        }
+
+
+        .resize-handle.nw {
+            left: -5px;
+            top: -5px;
+            cursor: nwse-resize;
+        }
+
+
+        .resize-handle.n {
+            left: 50%;
+            top: -5px;
+
+            transform:
+                translateX(-50%);
+
+            cursor: ns-resize;
+        }
+
+
+        .resize-handle.ne {
+            right: -5px;
+            top: -5px;
+            cursor: nesw-resize;
+        }
+
+
+        .resize-handle.w {
+            left: -5px;
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            cursor: ew-resize;
+        }
+
+
+        .resize-handle.e {
+            right: -5px;
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            cursor: ew-resize;
+        }
+
+
+        .resize-handle.sw {
+            left: -5px;
+            bottom: -5px;
+            cursor: nesw-resize;
+        }
+
+
+        .resize-handle.s {
+            left: 50%;
+            bottom: -5px;
+
+            transform:
+                translateX(-50%);
+
+            cursor: ns-resize;
+        }
+
+
+        .resize-handle.se {
+            right: -5px;
+            bottom: -5px;
+            cursor: nwse-resize;
+        }
+
+
+        /* =====================================================
+           QUICK STYLE
+           ===================================================== */
+
+        #quickStyle {
+            position: fixed;
+            display: none;
+
+            align-items: center;
+
+            gap: 3px;
+            padding: 5px;
+
+            background: white;
+
+            border:
+                1px solid #d5d5d5;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 5px 20px rgba(0, 0, 0, .16);
+
+            z-index: 10000;
+
+            user-select: none;
+        }
+
+
+        #quickStyle.active {
+            display: flex;
+        }
+
+
+        .style-button {
+            width: 30px;
+            height: 30px;
+
+            border: none;
+            background: transparent;
+
+            border-radius: 5px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            cursor: pointer;
+
+            color: #333;
+        }
+
+
+        .style-button:hover {
+            background: #eeeeee;
+        }
+
+
+        .style-button.active {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+
+        .style-divider {
+            width: 1px;
+            height: 22px;
+
+            background: #ddd;
+
+            margin:
+                0 3px;
+        }
+
+
+        #textColor {
+            width: 28px;
+            height: 28px;
+
+            padding: 2px;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+        }
+
+
+        /* =====================================================
+           ERROR
+           ===================================================== */
+
+        .error {
+            width: 500px;
+            max-width: 90%;
+
+            margin: 100px auto;
+
+            padding: 25px;
+
+            background: white;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 25px rgba(0, 0, 0, .15);
+
+            color: #b00020;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div id="viewer">
+
+    <div id="documentContainer">
+        Loading document...
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SELECTION
+     ===================================================== -->
+
+<div id="selectionBox">
+
+    <div class="resize-handle nw"></div>
+    <div class="resize-handle n"></div>
+    <div class="resize-handle ne"></div>
+
+    <div class="resize-handle w"></div>
+    <div class="resize-handle e"></div>
+
+    <div class="resize-handle sw"></div>
+    <div class="resize-handle s"></div>
+    <div class="resize-handle se"></div>
+
+</div>
+
+
+<!-- =====================================================
+     QUICK STYLE
+     ===================================================== -->
+
+<div id="quickStyle">
+
+    <button id="boldButton"
+            class="style-button"
+            title="Bold">
+
+        <i class="bi bi-type-bold"></i>
+
+    </button>
+
+
+    <button id="italicButton"
+            class="style-button"
+            title="Italic">
+
+        <i class="bi bi-type-italic"></i>
+
+    </button>
+
+
+    <button id="underlineButton"
+            class="style-button"
+            title="Underline">
+
+        <i class="bi bi-type-underline"></i>
+
+    </button>
+
+
+    <div class="style-divider"></div>
+
+
+    <button id="alignLeft"
+            class="style-button"
+            title="Align left">
+
+        <i class="bi bi-text-left"></i>
+
+    </button>
+
+
+    <button id="alignCenter"
+            class="style-button"
+            title="Align center">
+
+        <i class="bi bi-text-center"></i>
+
+    </button>
+
+
+    <button id="alignRight"
+            class="style-button"
+            title="Align right">
+
+        <i class="bi bi-text-right"></i>
+
+    </button>
+
+
+    <div class="style-divider"></div>
+
+
+    <input id="textColor"
+           type="color"
+           value="#000000"
+           title="Text color" />
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       STATE
+       ===================================================== */
+
+    let selectedElement = null;
+
+    let resizing = false;
+    let resizeDirection = null;
+
+    let resizeStartX = 0;
+    let resizeStartY = 0;
+
+    let resizeStartLeft = 0;
+    let resizeStartTop = 0;
+
+    let resizeStartWidth = 0;
+    let resizeStartHeight = 0;
+
+
+    /* =====================================================
+       POSITION
+       ===================================================== */
+
+    function applyPosition(element) {
+
+        const x =
+            parseFloat(
+                element.getAttribute("x")
+            ) || 0;
+
+        const y =
+            parseFloat(
+                element.getAttribute("y")
+            ) || 0;
+
+        const width =
+            element.getAttribute("width");
+
+        const height =
+            element.getAttribute("height");
+
+
+        element.style.left =
+            x + "px";
+
+        element.style.top =
+            y + "px";
+
+
+        if (width) {
+
+            element.style.width =
+                parseFloat(width) + "px";
+
+        }
+
+
+        if (height) {
+
+            element.style.height =
+                parseFloat(height) + "px";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CUSTOM ELEMENTS
+       ===================================================== */
+
+    class ShardPage extends HTMLElement {
+
+        connectedCallback() {
+
+            const width =
+                this.getAttribute("width");
+
+            const height =
+                this.getAttribute("height");
+
+
+            if (width)
+                this.style.width =
+                    width + "px";
+
+
+            if (height)
+                this.style.height =
+                    height + "px";
+
+        }
+
+    }
+
+
+    if (!customElements.get("shard-page")) {
+
+        customElements.define(
+            "shard-page",
+            ShardPage
+        );
+
+    }
+
+
+    class ShardText extends HTMLElement {
+
+        connectedCallback() {
+
+            applyPosition(this);
+
+        }
+
+    }
+
+
+    if (!customElements.get("shard-text")) {
+
+        customElements.define(
+            "shard-text",
+            ShardText
+        );
+
+    }
+
+
+    class ShardImage extends HTMLElement {
+
+        connectedCallback() {
+
+            applyPosition(this);
+
+            const src =
+                this.getAttribute("src");
+
+            if (!src)
+                return;
+
+
+            const img =
+                document.createElement("img");
+
+            img.src = src;
+
+            this.innerHTML = "";
+
+            this.appendChild(img);
+
+        }
+
+    }
+
+
+    if (!customElements.get("shard-image")) {
+
+        customElements.define(
+            "shard-image",
+            ShardImage
+        );
+
+    }
+
+
+    class ShardTable extends HTMLElement {
+
+        connectedCallback() {
+            applyPosition(this);
+        }
+
+    }
+
+
+    if (!customElements.get("shard-table")) {
+
+        customElements.define(
+            "shard-table",
+            ShardTable
+        );
+
+    }
+
+
+    class ShardShape extends HTMLElement {
+
+        connectedCallback() {
+            applyPosition(this);
+        }
+
+    }
+
+
+    if (!customElements.get("shard-shape")) {
+
+        customElements.define(
+            "shard-shape",
+            ShardShape
+        );
+
+    }
+
+
+    class ShardDrawing extends HTMLElement {
+
+        connectedCallback() {
+            applyPosition(this);
+        }
+
+    }
+
+
+    if (!customElements.get("shard-drawing")) {
+
+        customElements.define(
+            "shard-drawing",
+            ShardDrawing
+        );
+
+    }
+
+
+    /* =====================================================
+       LOAD
+       ===================================================== */
+
+    async function loadDocument() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+        const path =
+            params.get("path");
+
+
+        if (!path) {
+
+            showError(
+                "No document path specified."
+            );
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/files/Open?path=" +
+                    encodeURIComponent(path)
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!data.content) {
+
+                throw new Error(
+                    "Document is empty."
+                );
+
+            }
+
+
+            renderDocument(
+                data.content
+            );
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            showError(
+                "Unable to load document."
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RENDER
+       ===================================================== */
+
+    function renderDocument(html) {
+
+        const container =
+            document.getElementById(
+                "documentContainer"
+            );
+
+
+        container.innerHTML = "";
+
+
+        const parser =
+            new DOMParser();
+
+
+        const parsed =
+            parser.parseFromString(
+                html,
+                "text/html"
+            );
+
+
+        const root =
+            parsed.querySelector(
+                "shard-document"
+            );
+
+
+        if (!root) {
+
+            showError(
+                "Invalid Shard document."
+            );
+
+            return;
+
+        }
+
+
+        container.appendChild(root);
+
+        setupSelection();
+
+    }
+
+
+    /* =====================================================
+       SELECTION
+       ===================================================== */
+
+    function setupSelection() {
+
+        document
+            .querySelectorAll(
+                "shard-text, shard-image, shard-table, shard-shape, shard-drawing"
+            )
+            .forEach(element => {
+
+                element.addEventListener(
+                    "mousedown",
+                    onElementMouseDown
+                );
+
+            });
+
+    }
+
+
+    function onElementMouseDown(event) {
+
+        event.stopPropagation();
+
+        selectElement(
+            event.currentTarget
+        );
+
+    }
+
+
+    function selectElement(element) {
+
+        selectedElement =
+            element;
+
+
+        document
+            .getElementById("selectionBox")
+            .classList.add("active");
+
+
+        document
+            .getElementById("quickStyle")
+            .classList.add("active");
+
+
+        updateSelectionBox();
+
+        updateQuickStyle();
+
+    }
+
+
+    function deselectElement() {
+
+        selectedElement =
+            null;
+
+
+        document
+            .getElementById("selectionBox")
+            .classList.remove("active");
+
+
+        document
+            .getElementById("quickStyle")
+            .classList.remove("active");
+
+    }
+
+
+    /* =====================================================
+       SELECTION BOX
+       ===================================================== */
+
+    function updateSelectionBox() {
+
+        if (!selectedElement)
+            return;
+
+
+        const rect =
+            selectedElement.getBoundingClientRect();
+
+
+        const box =
+            document.getElementById(
+                "selectionBox"
+            );
+
+
+        box.style.left =
+            rect.left + "px";
+
+        box.style.top =
+            rect.top + "px";
+
+        box.style.width =
+            rect.width + "px";
+
+        box.style.height =
+            rect.height + "px";
+
+
+        updateQuickStylePosition(
+            rect
+        );
+
+    }
+
+
+    function updateQuickStylePosition(rect) {
+
+        const toolbar =
+            document.getElementById(
+                "quickStyle"
+            );
+
+
+        let left =
+            rect.left;
+
+
+        let top =
+            rect.top -
+            toolbar.offsetHeight -
+            8;
+
+
+        if (
+            left +
+            toolbar.offsetWidth >
+            window.innerWidth
+        ) {
+
+            left =
+                window.innerWidth -
+                toolbar.offsetWidth -
+                10;
+
+        }
+
+
+        if (left < 10)
+            left = 10;
+
+
+        if (top < 10) {
+
+            top =
+                rect.bottom + 8;
+
+        }
+
+
+        toolbar.style.left =
+            left + "px";
+
+        toolbar.style.top =
+            top + "px";
+
+    }
+
+
+    /* =====================================================
+       QUICK STYLE
+       ===================================================== */
+
+    function updateQuickStyle() {
+
+        if (!selectedElement)
+            return;
+
+
+        const style =
+            getComputedStyle(
+                selectedElement
+            );
+
+
+        document
+            .getElementById("boldButton")
+            .classList.toggle(
+                "active",
+                style.fontWeight === "700" ||
+                style.fontWeight === "bold"
+            );
+
+
+        document
+            .getElementById("italicButton")
+            .classList.toggle(
+                "active",
+                style.fontStyle === "italic"
+            );
+
+
+        document
+            .getElementById("underlineButton")
+            .classList.toggle(
+                "active",
+                style.textDecoration.includes(
+                    "underline"
+                )
+            );
+
+
+        document
+            .getElementById("textColor")
+            .value =
+            rgbToHex(style.color);
+
+    }
+
+
+    /* =====================================================
+       LOCAL STYLE
+       ===================================================== */
+
+    function toggleStyle(
+        property,
+        on,
+        off
+    ) {
+
+        if (!selectedElement)
+            return;
+
+
+        const current =
+            getComputedStyle(
+                selectedElement
+            )[property];
+
+
+        selectedElement.style[property] =
+            current === on
+                ? off
+                : on;
+
+
+        updateSelectionBox();
+        updateQuickStyle();
+
+        sendEditorState();
+
+    }
+
+
+    function setAlignment(value) {
+
+        if (!selectedElement)
+            return;
+
+
+        selectedElement.style.textAlign =
+            value;
+
+
+        updateSelectionBox();
+        updateQuickStyle();
+
+        sendEditorState();
+
+    }
+
+
+    document
+        .getElementById("boldButton")
+        .onclick =
+        () =>
+            toggleStyle(
+                "fontWeight",
+                "bold",
+                "normal"
+            );
+
+
+    document
+        .getElementById("italicButton")
+        .onclick =
+        () =>
+            toggleStyle(
+                "fontStyle",
+                "italic",
+                "normal"
+            );
+
+
+    document
+        .getElementById("underlineButton")
+        .onclick =
+        () =>
+            toggleStyle(
+                "textDecoration",
+                "underline",
+                "none"
+            );
+
+
+    document
+        .getElementById("alignLeft")
+        .onclick =
+        () =>
+            setAlignment("left");
+
+
+    document
+        .getElementById("alignCenter")
+        .onclick =
+        () =>
+            setAlignment("center");
+
+
+    document
+        .getElementById("alignRight")
+        .onclick =
+        () =>
+            setAlignment("right");
+
+
+    document
+        .getElementById("textColor")
+        .addEventListener(
+            "input",
+            function () {
+
+                if (!selectedElement)
+                    return;
+
+
+                selectedElement.style.color =
+                    this.value;
+
+
+                updateQuickStyle();
+
+                sendEditorState();
+
+            }
+        );
+
+
+    /* =====================================================
+       RESIZE
+       ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".resize-handle"
+        )
+        .forEach(handle => {
+
+            handle.addEventListener(
+                "mousedown",
+                startResize
+            );
+
+        });
+
+
+    function startResize(event) {
+
+        if (!selectedElement)
+            return;
+
+
+        event.preventDefault();
+        event.stopPropagation();
+
+
+        resizing = true;
+
+
+        resizeDirection =
+            [...event.target.classList]
+                .find(
+                    c =>
+                        [
+                            "nw",
+                            "n",
+                            "ne",
+                            "w",
+                            "e",
+                            "sw",
+                            "s",
+                            "se"
+                        ].includes(c)
+                );
+
+
+        resizeStartX =
+            event.clientX;
+
+        resizeStartY =
+            event.clientY;
+
+
+        resizeStartLeft =
+            parseFloat(
+                selectedElement.style.left
+            ) || 0;
+
+        resizeStartTop =
+            parseFloat(
+                selectedElement.style.top
+            ) || 0;
+
+
+        resizeStartWidth =
+            selectedElement.offsetWidth;
+
+        resizeStartHeight =
+            selectedElement.offsetHeight;
+
+
+        document.addEventListener(
+            "mousemove",
+            resizeMove
+        );
+
+        document.addEventListener(
+            "mouseup",
+            stopResize
+        );
+
+    }
+
+
+    function resizeMove(event) {
+
+        if (
+            !resizing ||
+            !selectedElement
+        )
+            return;
+
+
+        const dx =
+            event.clientX -
+            resizeStartX;
+
+        const dy =
+            event.clientY -
+            resizeStartY;
+
+
+        let width =
+            resizeStartWidth;
+
+        let height =
+            resizeStartHeight;
+
+        let left =
+            resizeStartLeft;
+
+        let top =
+            resizeStartTop;
+
+
+        if (
+            resizeDirection.includes("e")
+        )
+            width =
+                resizeStartWidth + dx;
+
+
+        if (
+            resizeDirection.includes("w")
+        ) {
+
+            width =
+                resizeStartWidth - dx;
+
+            left =
+                resizeStartLeft + dx;
+
+        }
+
+
+        if (
+            resizeDirection.includes("s")
+        )
+            height =
+                resizeStartHeight + dy;
+
+
+        if (
+            resizeDirection.includes("n")
+        ) {
+
+            height =
+                resizeStartHeight - dy;
+
+            top =
+                resizeStartTop + dy;
+
+        }
+
+
+        width =
+            Math.max(20, width);
+
+        height =
+            Math.max(20, height);
+
+
+        selectedElement.style.width =
+            width + "px";
+
+        selectedElement.style.height =
+            height + "px";
+
+        selectedElement.style.left =
+            left + "px";
+
+        selectedElement.style.top =
+            top + "px";
+
+
+        selectedElement.setAttribute(
+            "width",
+            Math.round(width)
+        );
+
+        selectedElement.setAttribute(
+            "height",
+            Math.round(height)
+        );
+
+        selectedElement.setAttribute(
+            "x",
+            Math.round(left)
+        );
+
+        selectedElement.setAttribute(
+            "y",
+            Math.round(top)
+        );
+
+
+        updateSelectionBox();
+
+    }
+
+
+    function stopResize() {
+
+        resizing = false;
+
+
+        document.removeEventListener(
+            "mousemove",
+            resizeMove
+        );
+
+        document.removeEventListener(
+            "mouseup",
+            stopResize
+        );
+
+    }
+
+
+    /* =====================================================
+       OUTSIDE CLICK
+       ===================================================== */
+
+    document.addEventListener(
+        "mousedown",
+        event => {
+
+            if (
+                event.target.closest(
+                    "#selectionBox"
+                )
+            )
+                return;
+
+
+            if (
+                event.target.closest(
+                    "#quickStyle"
+                )
+            )
+                return;
+
+
+            if (
+                event.target.closest(
+                    "shard-text, shard-image, shard-table, shard-shape, shard-drawing"
+                )
+            )
+                return;
+
+
+            deselectElement();
+
+        }
+    );
+
+
+    /* =====================================================
+       SCROLL / RESIZE
+       ===================================================== */
+
+    document
+        .getElementById("viewer")
+        .addEventListener(
+            "scroll",
+            updateSelectionBox
+        );
+
+
+    window.addEventListener(
+        "resize",
+        updateSelectionBox
+    );
+
+
+    /* =====================================================
+       RGB -> HEX
+       ===================================================== */
+
+    function rgbToHex(rgb) {
+
+        const match =
+            rgb.match(/\d+/g);
+
+
+        if (!match)
+            return "#000000";
+
+
+        return "#" +
+            match
+                .slice(0, 3)
+                .map(
+                    x =>
+                        parseInt(x)
+                            .toString(16)
+                            .padStart(2, "0")
+                )
+                .join("");
+
+    }
+
+
+    /* =====================================================
+       EDITOR COMMAND HANDLER
+       ===================================================== */
+
+    function handleEditorCommand(
+        command,
+        value
+    ) {
+
+        console.log(
+            "Handling editor command:",
+            command,
+            value
+        );
+
+
+        switch (command) {
+
+            case "setStyle":
+
+                if (
+                    value &&
+                    value.property
+                ) {
+
+                    setSelectedStyle(
+                        value.property,
+                        value.value
+                    );
+
+                }
+
+                break;
+
+
+            case "toggleStyle":
+
+                if (
+                    value &&
+                    value.property
+                ) {
+
+                    toggleSelectedStyle(
+                        value.property,
+                        value.enabledValue,
+                        value.disabledValue
+                    );
+
+                }
+
+                break;
+
+
+            case "alignLeft":
+
+                setAlignment("left");
+
+                break;
+
+
+            case "alignCenter":
+
+                setAlignment("center");
+
+                break;
+
+
+            case "alignRight":
+
+                setAlignment("right");
+
+                break;
+
+
+            case "undo":
+
+                document.execCommand(
+                    "undo"
+                );
+
+                break;
+
+
+            case "redo":
+
+                document.execCommand(
+                    "redo"
+                );
+
+                break;
+
+
+            case "delete":
+
+                deleteSelected();
+
+                break;
+
+
+            case "duplicate":
+
+                duplicateSelected();
+
+                break;
+
+
+            case "insert":
+
+                insertElement(value);
+
+                break;
+
+
+            case "save":
+
+                saveDocument();
+
+                break;
+
+
+            case "bringForward":
+
+                bringForward();
+
+                break;
+
+
+            case "sendBackward":
+
+                sendBackward();
+
+                break;
+
+
+            default:
+
+                console.warn(
+                    "Unknown editor command:",
+                    command,
+                    value
+                );
+
+                break;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RIBBON -> VIEW IFRAME
+       ===================================================== */
+
+    window.addEventListener(
+        "message",
+        function (event) {
+
+            const data =
+                event.data;
+
+
+            if (!data)
+                return;
+
+
+            if (
+                data.type !==
+                "shard-editor-command"
+            )
+                return;
+
+
+            handleEditorCommand(
+                data.command,
+                data.value
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       SET STYLE
+       ===================================================== */
+
+    function setSelectedStyle(
+        property,
+        value
+    ) {
+
+        if (!selectedElement) {
+
+            console.log(
+                "No element selected."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            property === "fontFamily"
+        ) {
+
+            selectedElement.style.fontFamily =
+                value;
+
+        }
+        else if (
+            property === "fontSize"
+        ) {
+
+            selectedElement.style.fontSize =
+                value;
+
+        }
+        else {
+
+            selectedElement.style[property] =
+                value;
+
+        }
+
+
+        updateSelectionBox();
+        updateQuickStyle();
+
+        sendEditorState();
+
+    }
+
+
+    /* =====================================================
+       TOGGLE STYLE FROM RIBBON
+       ===================================================== */
+
+    function toggleSelectedStyle(
+        property,
+        enabledValue,
+        disabledValue
+    ) {
+
+        if (!selectedElement) {
+
+            console.log(
+                "No element selected."
+            );
+
+            return;
+
+        }
+
+
+        const current =
+            getComputedStyle(
+                selectedElement
+            )[property];
+
+
+        selectedElement.style[property] =
+            current === enabledValue
+                ? disabledValue
+                : enabledValue;
+
+
+        updateSelectionBox();
+        updateQuickStyle();
+
+        sendEditorState();
+
+    }
+
+
+    /* =====================================================
+       DELETE
+       ===================================================== */
+
+    function deleteSelected() {
+
+        if (!selectedElement)
+            return;
+
+
+        selectedElement.remove();
+
+        deselectElement();
+
+    }
+
+
+    /* =====================================================
+       DUPLICATE
+       ===================================================== */
+
+    function duplicateSelected() {
+
+        if (!selectedElement)
+            return;
+
+
+        const clone =
+            selectedElement.cloneNode(true);
+
+
+        const x =
+            parseFloat(
+                selectedElement.getAttribute("x")
+            ) || 0;
+
+
+        const y =
+            parseFloat(
+                selectedElement.getAttribute("y")
+            ) || 0;
+
+
+        clone.setAttribute(
+            "x",
+            x + 20
+        );
+
+        clone.setAttribute(
+            "y",
+            y + 20
+        );
+
+
+        applyPosition(clone);
+
+
+        selectedElement.parentElement
+            .appendChild(clone);
+
+
+        clone.addEventListener(
+            "mousedown",
+            onElementMouseDown
+        );
+
+
+        selectElement(clone);
+
+    }
+
+
+    /* =====================================================
+       INSERT
+       ===================================================== */
+
+    function insertElement(type) {
+
+        const page =
+            document.querySelector(
+                "shard-page"
+            );
+
+
+        if (!page)
+            return;
+
+
+        let element;
+
+
+        switch (type) {
+
+            case "text":
+
+                element =
+                    document.createElement(
+                        "shard-text"
+                    );
+
+
+                element.innerText =
+                    "New text";
+
+
+                element.style.fontSize =
+                    "24px";
+
+
+                break;
+
+
+            case "image":
+
+                console.log(
+                    "Image insert not implemented."
+                );
+
+                return;
+
+
+            case "table":
+
+                console.log(
+                    "Table insert not implemented."
+                );
+
+                return;
+
+
+            case "shape":
+
+                console.log(
+                    "Shape insert not implemented."
+                );
+
+                return;
+
+
+            case "drawing":
+
+                console.log(
+                    "Drawing insert not implemented."
+                );
+
+                return;
+
+
+            default:
+
+                return;
+
+        }
+
+
+        element.setAttribute(
+            "x",
+            "100"
+        );
+
+        element.setAttribute(
+            "y",
+            "100"
+        );
+
+        element.setAttribute(
+            "width",
+            "300"
+        );
+
+        element.setAttribute(
+            "height",
+            "60"
+        );
+
+
+        applyPosition(element);
+
+
+        page.appendChild(element);
+
+
+        element.addEventListener(
+            "mousedown",
+            onElementMouseDown
+        );
+
+
+        selectElement(element);
+
+    }
+
+
+    /* =====================================================
+       LAYERS
+       ===================================================== */
+
+    function bringForward() {
+
+        if (!selectedElement)
+            return;
+
+
+        const next =
+            selectedElement.nextElementSibling;
+
+
+        if (next) {
+
+            selectedElement.parentElement
+                .insertBefore(
+                    next,
+                    selectedElement
+                );
+
+        }
+
+    }
+
+
+    function sendBackward() {
+
+        if (!selectedElement)
+            return;
+
+
+        const previous =
+            selectedElement.previousElementSibling;
+
+
+        if (previous) {
+
+            selectedElement.parentElement
+                .insertBefore(
+                    selectedElement,
+                    previous
+                );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SAVE
+       ===================================================== */
+
+    async function saveDocument() {
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const path =
+            params.get("path");
+
+
+        if (!path)
+            return;
+
+
+        const root =
+            document.querySelector(
+                "shard-document"
+            );
+
+
+        if (!root)
+            return;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/files/Save?path=" +
+                    encodeURIComponent(path),
+                    {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                root.outerHTML
+                            )
+
+                    }
+                );
+
+
+            if (!response.ok)
+                throw new Error(
+                    "HTTP " +
+                    response.status
+                );
+
+
+            console.log(
+                "Document saved."
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Save error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       EDITOR STATE -> RIBBON
+       ===================================================== */
+
+    function sendEditorState() {
+
+        if (!selectedElement)
+            return;
+
+
+        const style =
+            getComputedStyle(
+                selectedElement
+            );
+
+
+        window.parent.postMessage({
+
+            type:
+                "shard-editor-state",
+
+            fontFamily:
+                style.fontFamily,
+
+            fontSize:
+                style.fontSize,
+
+            fontWeight:
+                style.fontWeight,
+
+            fontStyle:
+                style.fontStyle,
+
+            textDecoration:
+                style.textDecoration,
+
+            textAlign:
+                style.textAlign,
+
+            color:
+                style.color
+
+        }, "*");
+
+    }
+
+
+    /* =====================================================
+       READY
+       ===================================================== */
+
+    window.parent.postMessage({
+
+        type:
+            "shard-editor-ready"
+
+    }, "*");
+
+
+    /* =====================================================
+       ERROR
+       ===================================================== */
+
+    function showError(message) {
+
+        document
+            .getElementById(
+                "documentContainer"
+            )
+            .innerHTML = `
+
+                <div class="error">
+
+                    <i class="bi bi-exclamation-triangle"></i>
+
+                    <strong>
+                        Document error
+                    </strong>
+
+                    <br><br>
+
+                    ${message}
+
+                </div>
+
+            `;
+
+    }
+
+
+    /* =====================================================
+       START
+       ===================================================== */
+
+    loadDocument();
+
+</script>
+
+</body>
+</html>
