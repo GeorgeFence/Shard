@@ -1,171 +1,274 @@
 ﻿@page
 @model Shard.Pages.EditorModel
+@using System.Net
+
 @{
+    var documentPath =
+        Request.Query["path"].ToString();
+
+    if (string.IsNullOrWhiteSpace(documentPath))
+    {
+        documentPath =
+            "Documents/Test.html";
+    }
+
+    var viewIFrameUrl =
+        "/files/ViewIFrame?path=" +
+        Uri.EscapeDataString(documentPath);
 }
 
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
+
     <meta charset="utf-8" />
 
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0" />
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
 
-        html,
-        body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+            * {
+                box-sizing: border-box;
+            }
 
-        #editorRoot {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+            html,
+            body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
 
-        #ribbonFrame {
-            width: 100%;
-            height: 105px;
-            border: 0;
-            flex-shrink: 0;
-            display: block;
-            background: white;
-        }
+            #editorRoot {
+                width: 100%;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
 
-        #editorFrame {
-            width: 100%;
-            flex: 1;
-            min-height: 0;
-            border: 0;
-            display: block;
-            background: #f1f1f1;
-        }
+            #ribbonFrame {
+                width: 100%;
+                height: 105px;
+                border: 0;
+                flex-shrink: 0;
+                display: block;
+                background: white;
+            }
+
+            #editorFrame {
+                width: 100%;
+                flex: 1;
+                min-height: 0;
+                border: 0;
+                display: block;
+                background: #f1f1f1;
+            }
+
     </style>
+
 </head>
 
 <body>
 
-<div id="editorRoot">
+    <div id="editorRoot">
 
-    <iframe id="ribbonFrame"
-            src="/files/RibbonBar">
-    </iframe>
+        <iframe id="ribbonFrame"
+                src="/files/RibbonBar">
+        </iframe>
 
-    <iframe id="editorFrame"
-            src="/files/ViewIFrame?path=Documents/Test.html">
-    </iframe>
+        <iframe id="editorFrame"
+                src="@viewIFrameUrl">
+        </iframe>
 
-</div>
-
-<script>
-
-    const ribbonFrame =
-        document.getElementById("ribbonFrame");
-
-    const editorFrame =
-        document.getElementById("editorFrame");
+    </div>
 
 
-    /*
-     * ================================================
-     * RIBBON -> EDITOR IFRAME
-     * ================================================
-     */
+    <script>
 
-    window.addEventListener("message", function (event) {
+            const ribbonFrame =
+                document.getElementById(
+                    "ribbonFrame"
+                );
 
-        const data = event.data;
-
-        if (!data)
-            return;
-
-        if (data.type !== "shard-editor-command")
-            return;
-
-        console.log(
-            "Editor page received command:",
-            data
-        );
-
-        if (!editorFrame.contentWindow)
-            return;
-
-        editorFrame.contentWindow.postMessage(
-            data,
-            "*"
-        );
-
-    });
+            const editorFrame =
+                document.getElementById(
+                    "editorFrame"
+                );
 
 
-    /*
-     * ================================================
-     * EDITOR IFRAME -> RIBBON
-     * ================================================
-     */
+            /* =====================================================
+               RIBBON -> EDITOR
+               ===================================================== */
 
-    function sendToRibbon(data) {
+            window.addEventListener(
+                "message",
+                function (event) {
 
-        if (!ribbonFrame.contentWindow)
-            return;
+                    const data =
+                        event.data;
 
-        ribbonFrame.contentWindow.postMessage(
-            data,
-            "*"
-        );
-    }
+                    if (!data)
+                        return;
+
+                    if (
+                        data.type !==
+                        "shard-editor-command"
+                    )
+                        return;
+
+                    console.log(
+                        "Editor page received command:",
+                        data
+                    );
+
+                    if (
+                        !editorFrame ||
+                        !editorFrame.contentWindow
+                    )
+                        return;
+
+                    editorFrame.contentWindow.postMessage(
+                        data,
+                        "*"
+                    );
+
+                }
+            );
 
 
-    /*
-     * ================================================
-     * VIEW IFRAME READY
-     * ================================================
-     */
+            /* =====================================================
+               EDITOR -> RIBBON
+               ===================================================== */
 
-    editorFrame.addEventListener("load", function () {
+            function sendToRibbon(data) {
 
-        console.log(
-            "ViewIFrame loaded."
-        );
+                if (
+                    !ribbonFrame ||
+                    !ribbonFrame.contentWindow
+                )
+                    return;
 
-        sendToRibbon({
-            type: "shard-editor-ready"
-        });
+                ribbonFrame.contentWindow.postMessage(
+                    data,
+                    "*"
+                );
 
-    });
+            }
 
 
-    /*
-     * ================================================
-     * RIBBON READY
-     * ================================================
-     */
+            /* =====================================================
+               VIEW IFRAME READY
+               ===================================================== */
 
-    ribbonFrame.addEventListener("load", function () {
+            editorFrame.addEventListener(
+                "load",
+                function () {
 
-        console.log(
-            "Ribbon loaded."
-        );
+                    console.log(
+                        "ViewIFrame loaded:",
+                        editorFrame.src
+                    );
 
-        if (!editorFrame.contentWindow)
-            return;
+                    sendToRibbon({
 
-        editorFrame.contentWindow.postMessage({
-            type: "shard-ribbon-ready"
-        }, "*");
+                        type:
+                            "shard-editor-ready"
 
-    });
+                    });
 
-</script>
+                }
+            );
+
+
+            /* =====================================================
+               RIBBON READY
+               ===================================================== */
+
+            ribbonFrame.addEventListener(
+                "load",
+                function () {
+
+                    console.log(
+                        "Ribbon loaded."
+                    );
+
+                    if (
+                        !editorFrame ||
+                        !editorFrame.contentWindow
+                    )
+                        return;
+
+                    editorFrame.contentWindow.postMessage({
+
+                        type:
+                            "shard-ribbon-ready"
+
+                    }, "*");
+
+                }
+            );
+
+
+            /* =====================================================
+               EDITOR STATE -> RIBBON
+               ===================================================== */
+
+            window.addEventListener(
+                "message",
+                function (event) {
+
+                    const data =
+                        event.data;
+
+                    if (!data)
+                        return;
+
+                    if (
+                        data.type !==
+                        "shard-editor-state"
+                    )
+                        return;
+
+                    sendToRibbon(
+                        data
+                    );
+
+                }
+            );
+
+
+            /* =====================================================
+               PAGE STATE -> RIBBON
+               ===================================================== */
+
+            window.addEventListener(
+                "message",
+                function (event) {
+
+                    const data =
+                        event.data;
+
+                    if (!data)
+                        return;
+
+                    if (
+                        data.type !==
+                        "shard-page-state"
+                    )
+                        return;
+
+                    sendToRibbon(
+                        data
+                    );
+
+                }
+            );
+
+    </script>
 
 </body>
+
 </html>

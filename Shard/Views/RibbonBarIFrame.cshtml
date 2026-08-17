@@ -17,245 +17,187 @@
 
     <style>
 
-        * {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-
-            width: 100%;
-            height: 100%;
-
-            overflow: hidden;
-
-            font-family:
-                "Segoe UI",
-                system-ui,
-                sans-serif;
-
-            background: #ffffff;
-            color: #202020;
-        }
-
-
-        .ribbon {
-            width: 100%;
-            height: 100%;
-
-            display: flex;
-            flex-direction: column;
-
-            background: #fff;
-
-            border-bottom:
-                1px solid #d8d8d8;
-        }
-
-
-        .tabs {
-            height: 36px;
-
-            display: flex;
-            align-items: center;
-
-            padding: 0 10px;
-            gap: 4px;
-
-            border-bottom:
-                1px solid #e5e5e5;
-
-            flex-shrink: 0;
-        }
-
-
-        .tab {
-            height: 32px;
-
-            padding: 0 16px;
-
-            border: 0;
-            background: transparent;
-
-            border-radius:
-                6px 6px 0 0;
-
-            cursor: pointer;
-
-            font-size: 13px;
-            color: #555;
-        }
-
-
-        .tab:hover {
-            background: #f2f2f2;
-        }
-
-
-        .tab.active {
-            color: #2563eb;
-            background: #eef4ff;
-            font-weight: 600;
-        }
-
-
-        .ribbon-content {
-            flex: 1;
-
-            display: flex;
-            align-items: stretch;
-
-            overflow-x: auto;
-            overflow-y: hidden;
-
-            padding:
-                4px 8px;
-        }
-
-
-        .ribbon-panel {
-            display: none;
-
-            height: 100%;
-
-            align-items: stretch;
-        }
-
-
-        .ribbon-panel.active {
-            display: flex;
-        }
-
-
-        .group {
-            min-width: 80px;
-
-            padding:
-                2px 10px 0;
-
-            border-right:
-                1px solid #e5e5e5;
-
-            display: flex;
-            flex-direction: column;
-        }
-
-
-        .group:last-child {
-            border-right: 0;
-        }
-
-
-        .group-title {
-            text-align: center;
-
-            font-size: 10px;
-            color: #777;
-
-            margin-top: auto;
-            padding-top: 3px;
-        }
-
-
-        .buttons {
-            display: flex;
-
-            align-items: flex-start;
-            justify-content: center;
-
-            gap: 3px;
-
-            flex: 1;
-        }
-
-
-        .ribbon-button {
-            min-width: 48px;
-            height: 48px;
-
-            padding:
-                4px 7px;
-
-            border: 0;
-            background: transparent;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            display: flex;
-            flex-direction: column;
-
-            align-items: center;
-            justify-content: center;
-
-            gap: 3px;
-
-            color: #333;
-        }
-
-
-        .ribbon-button i {
-            font-size: 20px;
-        }
-
-
-        .ribbon-button span {
-            font-size: 10px;
-            white-space: nowrap;
-        }
-
-
-        .ribbon-button:hover {
-            background: #eeeeee;
-        }
-
-
-        .ribbon-button:active {
-            background: #e2e2e2;
-        }
-
-
-        .small-buttons {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 2px;
-
-            justify-content: center;
-        }
-
-
-        .ribbon-select {
-            height: 28px;
-
-            min-width: 120px;
-
-            border:
-                1px solid #ccc;
-
-            border-radius: 5px;
-
-            background: white;
-
-            padding:
-                0 8px;
-
-            font-size: 12px;
-        }
-
-
-        .insert-button {
-            min-width: 65px;
-        }
-
-
-        .insert-button i {
-            font-size: 23px;
-        }
+            * {
+                box-sizing: border-box;
+            }
+
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+                overflow: hidden;
+                font-family: "Segoe UI", system-ui, sans-serif;
+                background: #ffffff;
+                color: #202020;
+            }
+
+
+            .ribbon {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                background: #fff;
+                border-bottom: 1px solid #d8d8d8;
+            }
+
+
+            .tabs {
+                height: 36px;
+                display: flex;
+                align-items: center;
+                padding: 0 10px;
+                gap: 4px;
+                border-bottom: 1px solid #e5e5e5;
+                flex-shrink: 0;
+            }
+
+
+            .tab {
+                height: 32px;
+                padding: 0 16px;
+                border: 0;
+                background: transparent;
+                border-radius: 6px 6px 0 0;
+                cursor: pointer;
+                font-size: 13px;
+                color: #555;
+            }
+
+
+                .tab:hover {
+                    background: #f2f2f2;
+                }
+
+
+                .tab.active {
+                    color: #2563eb;
+                    background: #eef4ff;
+                    font-weight: 600;
+                }
+
+
+            .ribbon-content {
+                flex: 1;
+                display: flex;
+                align-items: stretch;
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 4px 8px;
+            }
+
+
+            .ribbon-panel {
+                display: none;
+                height: 100%;
+                align-items: stretch;
+            }
+
+
+                .ribbon-panel.active {
+                    display: flex;
+                }
+
+
+            .group {
+                min-width: 80px;
+                padding: 2px 10px 0;
+                border-right: 1px solid #e5e5e5;
+                display: flex;
+                flex-direction: column;
+            }
+
+
+                .group:last-child {
+                    border-right: 0;
+                }
+
+
+            .group-title {
+                text-align: center;
+                font-size: 10px;
+                color: #777;
+                margin-top: auto;
+                padding-top: 3px;
+            }
+
+
+            .buttons {
+                display: flex;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 3px;
+                flex: 1;
+            }
+
+
+            .ribbon-button {
+                min-width: 48px;
+                height: 48px;
+                padding: 4px 7px;
+                border: 0;
+                background: transparent;
+                border-radius: 6px;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 3px;
+                color: #333;
+            }
+
+
+                .ribbon-button i {
+                    font-size: 20px;
+                }
+
+
+                .ribbon-button span {
+                    font-size: 10px;
+                    white-space: nowrap;
+                }
+
+
+                .ribbon-button:hover {
+                    background: #eeeeee;
+                }
+
+
+                .ribbon-button:active {
+                    background: #e2e2e2;
+                }
+
+
+            .small-buttons {
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
+                justify-content: center;
+            }
+
+
+            .ribbon-select {
+                height: 28px;
+                min-width: 120px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                background: white;
+                padding: 0 8px;
+                font-size: 12px;
+            }
+
+
+            .insert-button {
+                min-width: 65px;
+            }
+
+
+                .insert-button i {
+                    font-size: 23px;
+                }
 
     </style>
 
@@ -263,432 +205,550 @@
 
 <body>
 
-<div class="ribbon">
+    <div class="ribbon">
 
-    <div class="tabs">
+        <div class="tabs">
 
-        <button class="tab active"
-                data-tab="home">
-            Home
-        </button>
+            <button class="tab active"
+                    data-tab="home">
+                Home
+            </button>
 
-        <button class="tab"
-                data-tab="insert">
-            Insert
-        </button>
+            <button class="tab"
+                    data-tab="insert">
+                Insert
+            </button>
 
-        <button class="tab"
-                data-tab="layout">
-            Layout
-        </button>
+            <button class="tab"
+                    data-tab="layout">
+                Layout
+            </button>
 
-    </div>
+            <button class="tab"
+                    data-tab="page">
+                Page
+            </button>
+
+        </div>
 
 
-    <div class="ribbon-content">
+        <div class="ribbon-content">
 
-        <!-- =================================================
+            <!-- =================================================
              HOME
              ================================================= -->
 
-        <div id="panel-home"
-             class="ribbon-panel active">
+            <div id="panel-home"
+                 class="ribbon-panel active">
 
-            <!-- HISTORY -->
+                <!-- HISTORY -->
 
-            <div class="group">
+                <div class="group">
 
-                <div class="buttons">
+                    <div class="buttons">
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('undo')">
+                        <button class="ribbon-button"
+                                onclick="editorCommand('undo')">
 
-                        <i class="bi bi-arrow-counterclockwise"></i>
+                            <i class="bi bi-arrow-counterclockwise"></i>
 
-                        <span>Undo</span>
+                            <span>Undo</span>
 
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="editorCommand('redo')">
-
-                        <i class="bi bi-arrow-clockwise"></i>
-
-                        <span>Redo</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    History
-                </div>
-
-            </div>
+                        </button>
 
 
-            <!-- FONT -->
+                        <button class="ribbon-button"
+                                onclick="editorCommand('redo')">
 
-            <div class="group">
+                            <i class="bi bi-arrow-clockwise"></i>
 
-                <div class="buttons">
+                            <span>Redo</span>
 
-                    <div class="small-buttons">
+                        </button>
 
-                        <select id="fontFamily"
-                                class="ribbon-select"
-                                onchange="setStyle('fontFamily', this.value)">
+                    </div>
 
-                            <option value="Segoe UI">
-                                Segoe UI
-                            </option>
-
-                            <option value="Arial">
-                                Arial
-                            </option>
-
-                            <option value="Times New Roman">
-                                Times New Roman
-                            </option>
-
-                            <option value="Courier New">
-                                Courier New
-                            </option>
-
-                        </select>
-
-
-                        <select id="fontSize"
-                                class="ribbon-select"
-                                onchange="setStyle('fontSize', this.value + 'px')">
-
-                            <option value="12">12</option>
-                            <option value="14">14</option>
-                            <option value="16" selected>16</option>
-                            <option value="18">18</option>
-                            <option value="24">24</option>
-                            <option value="32">32</option>
-                            <option value="48">48</option>
-
-                        </select>
-
+                    <div class="group-title">
+                        History
                     </div>
 
                 </div>
 
-                <div class="group-title">
-                    Font
+
+                <!-- FONT -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <div class="small-buttons">
+
+                            <select id="fontFamily"
+                                    class="ribbon-select"
+                                    onchange="setStyle('fontFamily', this.value)">
+
+                                <option value="Segoe UI">
+                                    Segoe UI
+                                </option>
+
+                                <option value="Arial">
+                                    Arial
+                                </option>
+
+                                <option value="Times New Roman">
+                                    Times New Roman
+                                </option>
+
+                                <option value="Courier New">
+                                    Courier New
+                                </option>
+
+                            </select>
+
+
+                            <select id="fontSize"
+                                    class="ribbon-select"
+                                    onchange="setStyle('fontSize', this.value + 'px')">
+
+                                <option value="12">12</option>
+                                <option value="14">14</option>
+                                <option value="16" selected>16</option>
+                                <option value="18">18</option>
+                                <option value="24">24</option>
+                                <option value="32">32</option>
+                                <option value="48">48</option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                    <div class="group-title">
+                        Font
+                    </div>
+
+                </div>
+
+
+                <!-- TEXT -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="toggleStyle('fontWeight', 'bold', 'normal')">
+
+                            <i class="bi bi-type-bold"></i>
+
+                            <span>Bold</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="toggleStyle('fontStyle', 'italic', 'normal')">
+
+                            <i class="bi bi-type-italic"></i>
+
+                            <span>Italic</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="toggleStyle('textDecoration', 'underline', 'none')">
+
+                            <i class="bi bi-type-underline"></i>
+
+                            <span>Underline</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Text
+                    </div>
+
+                </div>
+
+
+                <!-- ALIGNMENT -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="setStyle('textAlign', 'left')">
+
+                            <i class="bi bi-text-left"></i>
+
+                            <span>Left</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="setStyle('textAlign', 'center')">
+
+                            <i class="bi bi-text-center"></i>
+
+                            <span>Center</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="setStyle('textAlign', 'right')">
+
+                            <i class="bi bi-text-right"></i>
+
+                            <span>Right</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Alignment
+                    </div>
+
+                </div>
+
+
+                <!-- SAVE -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('save')">
+
+                            <i class="bi bi-floppy"></i>
+
+                            <span>Save</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        File
+                    </div>
+
                 </div>
 
             </div>
 
 
-            <!-- TEXT -->
-
-            <div class="group">
-
-                <div class="buttons">
-
-                    <button class="ribbon-button"
-                            onclick="toggleStyle('fontWeight', 'bold', 'normal')">
-
-                        <i class="bi bi-type-bold"></i>
-
-                        <span>Bold</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="toggleStyle('fontStyle', 'italic', 'normal')">
-
-                        <i class="bi bi-type-italic"></i>
-
-                        <span>Italic</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="toggleStyle('textDecoration', 'underline', 'none')">
-
-                        <i class="bi bi-type-underline"></i>
-
-                        <span>Underline</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    Text
-                </div>
-
-            </div>
-
-
-            <!-- ALIGNMENT -->
-
-            <div class="group">
-
-                <div class="buttons">
-
-                    <button class="ribbon-button"
-                            onclick="setStyle('textAlign', 'left')">
-
-                        <i class="bi bi-text-left"></i>
-
-                        <span>Left</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="setStyle('textAlign', 'center')">
-
-                        <i class="bi bi-text-center"></i>
-
-                        <span>Center</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="setStyle('textAlign', 'right')">
-
-                        <i class="bi bi-text-right"></i>
-
-                        <span>Right</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    Alignment
-                </div>
-
-            </div>
-
-
-            <!-- SAVE -->
-
-            <div class="group">
-
-                <div class="buttons">
-
-                    <button class="ribbon-button"
-                            onclick="editorCommand('save')">
-
-                        <i class="bi bi-floppy"></i>
-
-                        <span>Save</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    File
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
+            <!-- =================================================
              INSERT
              ================================================= -->
 
-        <div id="panel-insert"
-             class="ribbon-panel">
+            <div id="panel-insert"
+                 class="ribbon-panel">
 
-            <div class="group">
+                <div class="group">
 
-                <div class="buttons">
+                    <div class="buttons">
 
-                    <button class="ribbon-button insert-button"
-                            onclick="insertElement('text')">
+                        <button class="ribbon-button insert-button"
+                                onclick="insertElement('text')">
 
-                        <i class="bi bi-type"></i>
+                            <i class="bi bi-type"></i>
 
-                        <span>Text</span>
+                            <span>Text</span>
 
-                    </button>
+                        </button>
 
 
-                    <button class="ribbon-button insert-button"
-                            onclick="insertElement('image')">
+                        <button class="ribbon-button insert-button"
+                                onclick="insertElement('image')">
 
-                        <i class="bi bi-image"></i>
+                            <i class="bi bi-image"></i>
 
-                        <span>Image</span>
+                            <span>Image</span>
 
-                    </button>
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Basic
+                    </div>
 
                 </div>
 
-                <div class="group-title">
-                    Basic
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button insert-button"
+                                onclick="insertElement('table')">
+
+                            <i class="bi bi-table"></i>
+
+                            <span>Table</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button insert-button"
+                                onclick="insertElement('shape')">
+
+                            <i class="bi bi-square"></i>
+
+                            <span>Shape</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button insert-button"
+                                onclick="insertElement('drawing')">
+
+                            <i class="bi bi-pencil"></i>
+
+                            <span>Drawing</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Elements
+                    </div>
+
                 </div>
 
             </div>
 
 
-            <div class="group">
-
-                <div class="buttons">
-
-                    <button class="ribbon-button insert-button"
-                            onclick="insertElement('table')">
-
-                        <i class="bi bi-table"></i>
-
-                        <span>Table</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button insert-button"
-                            onclick="insertElement('shape')">
-
-                        <i class="bi bi-square"></i>
-
-                        <span>Shape</span>
-
-                    </button>
-
-
-                    <button class="ribbon-button insert-button"
-                            onclick="insertElement('drawing')">
-
-                        <i class="bi bi-pencil"></i>
-
-                        <span>Drawing</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    Elements
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =================================================
+            <!-- =================================================
              LAYOUT
              ================================================= -->
 
-        <div id="panel-layout"
-             class="ribbon-panel">
+            <div id="panel-layout"
+                 class="ribbon-panel">
 
-            <div class="group">
+                <div class="group">
 
-                <div class="buttons">
+                    <div class="buttons">
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('alignLeft')">
+                        <button class="ribbon-button"
+                                onclick="editorCommand('alignLeft')">
 
-                        <i class="bi bi-align-start"></i>
+                            <i class="bi bi-align-start"></i>
 
-                        <span>Left</span>
+                            <span>Left</span>
 
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="editorCommand('alignCenter')">
-
-                        <i class="bi bi-align-center"></i>
-
-                        <span>Center</span>
-
-                    </button>
+                        </button>
 
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('alignRight')">
+                        <button class="ribbon-button"
+                                onclick="editorCommand('alignCenter')">
 
-                        <i class="bi bi-align-end"></i>
+                            <i class="bi bi-align-center"></i>
 
-                        <span>Right</span>
+                            <span>Center</span>
 
-                    </button>
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('alignRight')">
+
+                            <i class="bi bi-align-end"></i>
+
+                            <span>Right</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Arrange
+                    </div>
 
                 </div>
 
-                <div class="group-title">
-                    Arrange
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('bringForward')">
+
+                            <i class="bi bi-front"></i>
+
+                            <span>Forward</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('sendBackward')">
+
+                            <i class="bi bi-back"></i>
+
+                            <span>Backward</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Layers
+                    </div>
+
+                </div>
+
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('delete')">
+
+                            <i class="bi bi-trash"></i>
+
+                            <span>Delete</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('duplicate')">
+
+                            <i class="bi bi-copy"></i>
+
+                            <span>Duplicate</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Object
+                    </div>
+
                 </div>
 
             </div>
 
 
-            <div class="group">
+            <!-- =================================================
+             PAGE
+             ================================================= -->
 
-                <div class="buttons">
+            <div id="panel-page"
+                 class="ribbon-panel">
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('bringForward')">
+                <!-- PAGE NAVIGATION -->
 
-                        <i class="bi bi-front"></i>
+                <div class="group">
 
-                        <span>Forward</span>
+                    <div class="buttons">
 
-                    </button>
+                        <button class="ribbon-button"
+                                onclick="editorCommand('previousPage')">
 
+                            <i class="bi bi-chevron-left"></i>
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('sendBackward')">
+                            <span>Previous</span>
 
-                        <i class="bi bi-back"></i>
-
-                        <span>Backward</span>
-
-                    </button>
-
-                </div>
-
-                <div class="group-title">
-                    Layers
-                </div>
-
-            </div>
+                        </button>
 
 
-            <div class="group">
+                        <button class="ribbon-button"
+                                onclick="editorCommand('nextPage')">
 
-                <div class="buttons">
+                            <i class="bi bi-chevron-right"></i>
 
-                    <button class="ribbon-button"
-                            onclick="editorCommand('delete')">
+                            <span>Next</span>
 
-                        <i class="bi bi-trash"></i>
+                        </button>
 
-                        <span>Delete</span>
+                    </div>
 
-                    </button>
-
-
-                    <button class="ribbon-button"
-                            onclick="editorCommand('duplicate')">
-
-                        <i class="bi bi-copy"></i>
-
-                        <span>Duplicate</span>
-
-                    </button>
+                    <div class="group-title">
+                        Navigate
+                    </div>
 
                 </div>
 
-                <div class="group-title">
-                    Object
+
+                <!-- PAGE MANAGEMENT -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('addPage')">
+
+                            <i class="bi bi-file-earmark-plus"></i>
+
+                            <span>Add Page</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('duplicatePage')">
+
+                            <i class="bi bi-files"></i>
+
+                            <span>Duplicate</span>
+
+                        </button>
+
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('deletePage')">
+
+                            <i class="bi bi-file-earmark-x"></i>
+
+                            <span>Delete</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Pages
+                    </div>
+
+                </div>
+
+
+                <!-- PAGE SETTINGS -->
+
+                <div class="group">
+
+                    <div class="buttons">
+
+                        <button class="ribbon-button"
+                                onclick="editorCommand('pageSettings')">
+
+                            <i class="bi bi-file-earmark-ruled"></i>
+
+                            <span>Settings</span>
+
+                        </button>
+
+                    </div>
+
+                    <div class="group-title">
+                        Page
+                    </div>
+
                 </div>
 
             </div>
@@ -697,264 +757,263 @@
 
     </div>
 
-</div>
+
+    <script>
+
+            /* =====================================================
+               TABS
+               ===================================================== */
+
+            document
+                .querySelectorAll(".tab")
+                .forEach(tab => {
+
+                    tab.addEventListener(
+                        "click",
+                        function () {
+
+                            document
+                                .querySelectorAll(".tab")
+                                .forEach(x =>
+                                    x.classList.remove("active")
+                                );
 
 
-<script>
-
-    /* =====================================================
-       TABS
-       ===================================================== */
-
-    document
-        .querySelectorAll(".tab")
-        .forEach(tab => {
-
-            tab.addEventListener(
-                "click",
-                function () {
-
-                    document
-                        .querySelectorAll(".tab")
-                        .forEach(x =>
-                            x.classList.remove("active")
-                        );
+                            document
+                                .querySelectorAll(".ribbon-panel")
+                                .forEach(x =>
+                                    x.classList.remove("active")
+                                );
 
 
-                    document
-                        .querySelectorAll(".ribbon-panel")
-                        .forEach(x =>
-                            x.classList.remove("active")
-                        );
+                            tab.classList.add("active");
 
 
-                    tab.classList.add("active");
+                            const panel =
+                                document.getElementById(
+                                    "panel-" +
+                                    tab.dataset.tab
+                                );
 
 
-                    const panel =
+                            if (panel) {
+
+                                panel.classList.add(
+                                    "active"
+                                );
+
+                            }
+
+                        }
+                    );
+
+                });
+
+
+            /* =====================================================
+               SEND COMMAND
+               ===================================================== */
+
+            function editorCommand(
+                command,
+                value = null
+            ) {
+
+                if (
+                    !window.parent ||
+                    window.parent === window
+                ) {
+
+                    console.warn(
+                        "Ribbon has no parent."
+                    );
+
+                    return;
+                }
+
+
+                console.log(
+                    "Ribbon command:",
+                    command,
+                    value
+                );
+
+
+                window.parent.postMessage({
+
+                    type:
+                        "shard-editor-command",
+
+                    command:
+                        command,
+
+                    value:
+                        value
+
+                }, "*");
+
+            }
+
+
+            /* =====================================================
+               SET STYLE
+               ===================================================== */
+
+            function setStyle(
+                property,
+                value
+            ) {
+
+                editorCommand(
+                    "setStyle",
+                    {
+                        property:
+                            property,
+
+                        value:
+                            value
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               TOGGLE STYLE
+               ===================================================== */
+
+            function toggleStyle(
+                property,
+                enabledValue,
+                disabledValue
+            ) {
+
+                editorCommand(
+                    "toggleStyle",
+                    {
+                        property:
+                            property,
+
+                        enabledValue:
+                            enabledValue,
+
+                        disabledValue:
+                            disabledValue
+                    }
+                );
+
+            }
+
+
+            /* =====================================================
+               INSERT
+               ===================================================== */
+
+            function insertElement(type) {
+
+                editorCommand(
+                    "insert",
+                    type
+                );
+
+            }
+
+
+            /* =====================================================
+               EDITOR STATE
+               ===================================================== */
+
+            window.addEventListener(
+                "message",
+                function (event) {
+
+                    const data =
+                        event.data;
+
+
+                    if (
+                        !data ||
+                        data.type !==
+                        "shard-editor-state"
+                    )
+                        return;
+
+
+                    const fontFamily =
                         document.getElementById(
-                            "panel-" +
-                            tab.dataset.tab
+                            "fontFamily"
                         );
 
 
-                    if (panel) {
-
-                        panel.classList.add(
-                            "active"
+                    const fontSize =
+                        document.getElementById(
+                            "fontSize"
                         );
+
+
+                    if (
+                        fontFamily &&
+                        data.fontFamily
+                    ) {
+
+                        const value =
+                            data.fontFamily
+                                .split(",")[0]
+                                .replaceAll('"', "")
+                                .replaceAll("'", "")
+                                .trim();
+
+
+                        const option =
+                            [...fontFamily.options]
+                                .find(
+                                    x =>
+                                        x.value.toLowerCase() ===
+                                        value.toLowerCase()
+                                );
+
+
+                        if (option) {
+
+                            fontFamily.value =
+                                option.value;
+
+                        }
+
+                    }
+
+
+                    if (
+                        fontSize &&
+                        data.fontSize
+                    ) {
+
+                        const size =
+                            parseInt(
+                                data.fontSize
+                            );
+
+
+                        if (
+                            [...fontSize.options]
+                                .some(
+                                    x =>
+                                        parseInt(x.value) ===
+                                        size
+                                )
+                        ) {
+
+                            fontSize.value =
+                                size;
+
+                        }
 
                     }
 
                 }
             );
 
-        });
-
-
-    /* =====================================================
-       SEND COMMAND
-       ===================================================== */
-
-    function editorCommand(
-        command,
-        value = null
-    ) {
-
-        if (
-            !window.parent ||
-            window.parent === window
-        ) {
-
-            console.warn(
-                "Ribbon has no parent."
-            );
-
-            return;
-        }
-
-
-        console.log(
-            "Ribbon command:",
-            command,
-            value
-        );
-
-
-        window.parent.postMessage({
-
-            type:
-                "shard-editor-command",
-
-            command:
-                command,
-
-            value:
-                value
-
-        }, "*");
-
-    }
-
-
-    /* =====================================================
-       SET STYLE
-       ===================================================== */
-
-    function setStyle(
-        property,
-        value
-    ) {
-
-        editorCommand(
-            "setStyle",
-            {
-                property:
-                    property,
-
-                value:
-                    value
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       TOGGLE STYLE
-       ===================================================== */
-
-    function toggleStyle(
-        property,
-        enabledValue,
-        disabledValue
-    ) {
-
-        editorCommand(
-            "toggleStyle",
-            {
-                property:
-                    property,
-
-                enabledValue:
-                    enabledValue,
-
-                disabledValue:
-                    disabledValue
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       INSERT
-       ===================================================== */
-
-    function insertElement(type) {
-
-        editorCommand(
-            "insert",
-            type
-        );
-
-    }
-
-
-    /* =====================================================
-       EDITOR STATE
-       ===================================================== */
-
-    window.addEventListener(
-        "message",
-        function (event) {
-
-            const data =
-                event.data;
-
-
-            if (
-                !data ||
-                data.type !==
-                "shard-editor-state"
-            )
-                return;
-
-
-            const fontFamily =
-                document.getElementById(
-                    "fontFamily"
-                );
-
-
-            const fontSize =
-                document.getElementById(
-                    "fontSize"
-                );
-
-
-            if (
-                fontFamily &&
-                data.fontFamily
-            ) {
-
-                const value =
-                    data.fontFamily
-                        .split(",")[0]
-                        .replaceAll('"', "")
-                        .trim();
-
-
-                const option =
-                    [...fontFamily.options]
-                        .find(
-                            x =>
-                                x.value.toLowerCase() ===
-                                value.toLowerCase()
-                        );
-
-
-                if (option) {
-
-                    fontFamily.value =
-                        option.value;
-
-                }
-
-            }
-
-
-            if (
-                fontSize &&
-                data.fontSize
-            ) {
-
-                const size =
-                    parseInt(
-                        data.fontSize
-                    );
-
-
-                if (
-                    [...fontSize.options]
-                        .some(
-                            x =>
-                                parseInt(x.value) ===
-                                size
-                        )
-                ) {
-
-                    fontSize.value =
-                        size;
-
-                }
-
-            }
-
-        }
-    );
-
-</script>
+    </script>
 
 </body>
 </html>
