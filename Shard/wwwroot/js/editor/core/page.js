@@ -376,12 +376,6 @@
                     this.currentIndex
                 );
 
-                page.style.display =
-                    index ===
-                        this.currentIndex
-                        ? ""
-                        : "none";
-
             }
         );
 
